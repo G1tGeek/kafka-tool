@@ -1,0 +1,6 @@
+---
+# handlers file for kafka
+    - name: reload kafka
+      service:
+        name: kafka
+        state: restarted
