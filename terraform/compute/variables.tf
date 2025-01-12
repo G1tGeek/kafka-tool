@@ -2,7 +2,7 @@
 
 variable "ami_id" {
   type    = string
-  default = "ami-03fa85deedfcac80b"
+  default = "ami-005fc0f236362e99f"
 }
 
 variable "ec2_micro" {
