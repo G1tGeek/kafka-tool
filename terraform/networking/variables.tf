@@ -31,13 +31,13 @@ variable "subnet4_range" {
 
 variable "az1" {
   type    = string
-  default = "ap-southeast-1a"
+  default = "us-east-1a"
 }
 
 
 variable "az2" {
   type    = string
-  default = "ap-southeast-1b"
+  default = "us-east-1b"
 }
 
 
