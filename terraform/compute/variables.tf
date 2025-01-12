@@ -17,7 +17,7 @@ variable "ec2_medium" {
 
 variable "pem_key" {
   type    = string
-  default = "singapore"
+  default = "tool"
 }
 
 variable "public_subnet_id" {
