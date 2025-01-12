@@ -29,7 +29,7 @@ terraform {
   backend "s3" {
     bucket  = "yuvraj-tf-bucket"
     key     = "terraform.tfstate"
-    region  = "us-east-1"
+    region  = "ap-southeast-1"
     encrypt = true
   }
 }
