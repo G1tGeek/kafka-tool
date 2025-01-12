@@ -12,7 +12,7 @@ module "peering" {
   default_vpc_cidr_block  = module.networking.default_vpc_cidr_block
   public_route_table_id      = module.networking.public_route_table_id
   private_route_table_id      = module.networking.private_route_table_id
-
+depends_on = [module.networking]
 }
 
 module "compute" {
