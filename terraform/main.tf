@@ -27,9 +27,9 @@ module "compute" {
 
 terraform {
   backend "s3" {
-    bucket  = "yuvraj-ki-module-ki-balti"
+    bucket  = "yuvraj-tf-bucket"
     key     = "terraform.tfstate"
-    region  = "ap-southeast-1"
+    region  = "us-east-1"
     encrypt = true
   }
 }
