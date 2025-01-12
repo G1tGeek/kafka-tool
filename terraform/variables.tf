@@ -31,13 +31,13 @@ variable "subnet4_range" {
 
 variable "az1" {
   type    = string
-  default = "ap-southeast-1a"
+  default = "us-east-1a"
 }
 
 
 variable "az2" {
   type    = string
-  default = "ap-southeast-1b"
+  default = "us-east-1b"
 }
 
 
@@ -70,7 +70,7 @@ variable "sg_cidr_range" {
 
 variable "ami_id" {
   type    = string
-  default = "ami-03fa85deedfcac80b"
+  default = "ami-005fc0f236362e99f"
 }
 
 variable "ec2_micro" {
@@ -85,5 +85,5 @@ variable "ec2_medium" {
 
 variable "pem_key" {
   type    = string
-  default = "singapore"
+  default = "tool"
 }
