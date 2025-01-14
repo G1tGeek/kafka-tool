@@ -20,11 +20,11 @@
     dest: /opt/
     remote_src: yes
 
-- name: Generate Kafka server properties in KRaft mode
-  become: true
-  template:
-    src: "kraft-server.properties.j2"
-    dest: "{{ kafka_install_dir }}/config/kraft/server.properties"  
+- name: Generate uuid
+  command: KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"  
+
+- name: Add uuid to configurations
+  command: bin/kafka-storage.sh format --standalone -t $KAFKA_CLUSTER_ID -c config/kraft/reconfig-server.properties
 
 - name: Create Kafka systemd service file
   become: true
