@@ -2,7 +2,7 @@
 # tasks file for kafka
 - name: Read Terraform outputs file
   slurp:
-    src: "outputs.txt"  
+    src: "ansible/outputs.txt"  
   register: terraform_outputs_raw
 
 - name: Parse Terraform outputs into variables
