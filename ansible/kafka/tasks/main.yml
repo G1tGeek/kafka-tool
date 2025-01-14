@@ -1,4 +1,3 @@
----
 # tasks file for kafka
 - name: Update the system
   command: sudo apt update
@@ -13,12 +12,21 @@
     src: "/tmp/outputs.txt"
   register: terraform_outputs_raw
 
+- name: Debug decoded Terraform outputs
+  debug:
+    msg: "{{ terraform_outputs_raw.content | b64decode }}"
+
 - name: Parse Terraform outputs into variables
   set_fact:
     kafka_host: >
       {{
-        terraform_outputs_raw.content | b64decode | regex_findall("^kafka-host\\s+(.+)$") | first
+        (terraform_outputs_raw.content | b64decode | regex_findall("^kafka-host\\s+(.+)$") | first)
       }}
+
+- name: Debug Kafka host
+  debug:
+    msg: "Kafka host IP is {{ kafka_host }}"
+
 
 - name: Ensure Kafka dependencies are installed
   package:
