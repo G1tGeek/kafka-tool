@@ -13,6 +13,9 @@ controller.quorum.voters=1@{{ ansible_host }}:9093
 listeners=PLAINTEXT://{{ ansible_host }}:9092,CONTROLLER://{{ ansible_host }}:9093
 advertised.listeners=PLAINTEXT://{{ ansible_host }}:9092,CONTROLLER://{{ ansible_host }}:9093
 
+# Security protocols for listeners
+listener.security.protocol.map=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+
 # Inter-broker communication listener
 inter.broker.listener.name=PLAINTEXT
 
