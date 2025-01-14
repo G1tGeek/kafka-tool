@@ -1,5 +1,17 @@
 ---
 # tasks file for kafka
+- name: Read Terraform outputs file
+  slurp:
+    src: "outputs.txt"  
+  register: terraform_outputs_raw
+
+- name: Parse Terraform outputs into variables
+  set_fact:
+    kafka_host: >
+      {{
+        terraform_outputs_raw.content | b64decode | regex_findall("^kafka-host\\s+(.+)$") | first
+      }}
+
 - name: Update the system
   command: sudo apt update
 
@@ -66,7 +78,6 @@
 - name: Start Kafka service
   command: systemctl start kafka
 
-# Add Kafka to system PATH
 - name: Add Kafka to PATH
   lineinfile:
     path: /etc/profile
@@ -84,6 +95,5 @@
   args:
     creates: "{{ kafka_data_dir }}/topic-finnhub"
 
-# Reload profile to apply PATH change
 - name: Reload profile to apply PATH change
   shell: bash -c 'source /etc/profile'
