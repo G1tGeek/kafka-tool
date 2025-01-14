@@ -9,25 +9,28 @@ producer = KafkaProducer(
     value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
 
-# Finnhub API setup
-API_KEY = "cu2eg8pr01ql7sc7bkbgcu2eg8pr01ql7sc7bkc0"
-FINNHUB_URL = "https://finnhub.io/api/v1/quote?symbol=AAPL"
+# Visual Crossing Weather API setup
+API_KEY = "N9QJNA6A4HB8FTKQ3URMAGBQS"
+VISUALCROSSING_URL = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/meerut"
 
-def fetch_finnhub_data():
+def fetch_weather_data():
     try:
-        response = requests.get(FINNHUB_URL, params={"token": API_KEY})
+        response = requests.get(
+            VISUALCROSSING_URL,
+            params={"unitGroup": "metric", "key": API_KEY, "contentType": "json"}
+        )
         response.raise_for_status()
         data = response.json()
         return data
     except requests.RequestException as e:
-        print(f"Error fetching data from Finnhub: {e}")
+        print(f"Error fetching data from Visual Crossing: {e}")
         return None
 
 if __name__ == "__main__":
     while True:
-        data = fetch_finnhub_data()
+        data = fetch_weather_data()
         if data:
-            producer.send("FINNhub", data)
+            producer.send("FINNhub", data)  
             producer.flush()
             print(f"Data sent to Kafka topic 'FINNhub': {data}")
         time.sleep(10)  # Wait 10 seconds before fetching data again
