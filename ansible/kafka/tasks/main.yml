@@ -56,7 +56,7 @@
 
 - name: Wait for Kafka to start
   wait_for:
-    host: "{{ inventory_hostname }}"
+    host: "{{ ansible_hostname }}"
     port: "{{ kafka_port }}"
     state: started
     delay: 10
@@ -67,7 +67,7 @@
   command: >
     {{ kafka_install_dir }}/bin/kafka-topics.sh
     --create --topic {{ topic_name }}
-    --bootstrap-server {{ inventory_hostname }}:{{ kafka_port }}
+    --bootstrap-server {{ ansible_hostname }}:{{ kafka_port }}
     --partitions 1 --replication-factor 1
   when: topic_name not in kafka_existing_topics
   register: kafka_create_topic
