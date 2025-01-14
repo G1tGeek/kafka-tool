@@ -19,7 +19,7 @@
   set_fact:
     kafka_host: >
       {{
-        (terraform_outputs_raw.content | b64decode | regex_search('^kafka-host\\s+([0-9.]+)$', multiline=True)).group(1)
+        (terraform_outputs_raw.content | b64decode).splitlines() | select('match', '^kafka-host') | map('split', ' ') | map('last') | first
       }}
 
 - name: Debug Kafka host
