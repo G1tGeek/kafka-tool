@@ -24,7 +24,7 @@
   become: true
   template:
     src: "kraft-server.properties.j2"
-    dest: "{{ kafka_install_dir }}/kafka_2.13-{{ kafka_version }}/config/server.properties"
+    dest: "{{ kafka_install_dir }}/config/server.properties"  # Correct path here
 
 - name: Create Kafka systemd service file
   become: true
@@ -54,5 +54,5 @@
 - name: Create Kafka topic {{ topic_name }}
   become: true
   command:
-    cmd: "{{ kafka_install_dir }}/kafka_2.13-{{ kafka_version }}/bin/kafka-topics.sh --create --topic {{ topic_name }} --bootstrap-server kafka-host:{{ kafka_port }} --partitions 1 --replication-factor 1"
+    cmd: "{{ kafka_install_dir }}/bin/kafka-topics.sh --create --topic {{ topic_name }} --bootstrap-server kafka-host:{{ kafka_port }} --partitions 1 --replication-factor 1"
     creates: "{{ kafka_log_dirs }}/{{ topic_name }}"
