@@ -1,8 +1,16 @@
 ---
 # tasks file for kafka
+- name: Update the system
+  command: sudo apt update
+
+- name: Copy outputs.txt to the remote machine
+  copy:
+    src: "/var/lib/jenkins/workspace/one-click/ansible/outputs.txt"
+    dest: "/tmp/outputs.txt"
+
 - name: Read Terraform outputs file
   slurp:
-    src: "/var/lib/jenkins/workspace/one-click/ansible/outputs.txt"  
+    src: "/tmp/outputs.txt"
   register: terraform_outputs_raw
 
 - name: Parse Terraform outputs into variables
@@ -11,9 +19,6 @@
       {{
         terraform_outputs_raw.content | b64decode | regex_findall("^kafka-host\\s+(.+)$") | first
       }}
-
-- name: Update the system
-  command: sudo apt update
 
 - name: Ensure Kafka dependencies are installed
   package:
