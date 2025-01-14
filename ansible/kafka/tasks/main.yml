@@ -80,3 +80,12 @@
     --create --topic FINNhub
     --bootstrap-server {{ ansible_host }}:{{ kafka_port }}
     --partitions 1 --replication-factor 1
+
+- name: Generate Kafka server.properties from template
+  become: true
+  template:
+    src: server.properties.j2
+    dest: /opt/kafka_{{ kafka_version }}/config/kraft/server.properties
+  notify:
+    - Restart Kafka
+
