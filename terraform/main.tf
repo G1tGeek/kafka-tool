@@ -41,5 +41,5 @@ application-host ${module.compute.application_private_ip}
 kafka-host ${module.compute.kafka_private_ip}
 database-host ${module.compute.database_private_ip}
 EOT
-  filename = "${path.module}/outputs.txt"
+  filename = "outputs.txt"
 }
