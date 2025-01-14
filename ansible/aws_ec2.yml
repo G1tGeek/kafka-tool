@@ -4,8 +4,6 @@ regions:
 filters:
   tag:Name:
     - kafka-host
-    - application-host
-    - database-host
   instance-state-name: running
 
 compose:
