@@ -81,5 +81,11 @@
   args:
     creates: "{{ kafka_data_dir }}/topic-finnhub"
 
+- name: Ensure Kafka logs directory exists
+  file:
+    path: /opt/kafka/logs
+    state: directory
+    mode: '0755'
+
 - name: Reload profile to apply PATH change
   shell: bash -c 'source /etc/profile'
