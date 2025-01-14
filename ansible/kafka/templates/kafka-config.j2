@@ -2,8 +2,8 @@ broker.id={{ broker_id }}
 log.dirs={{ log_dirs }}
 
 # Listener configurations
-listeners=PLAINTEXT://{{ kafka_host }}:{{ kafka_port }},CONTROLLER://{{ kafka_host }}:9093
-advertised.listeners=PLAINTEXT://{{ kafka_host }}:{{ kafka_port }}
+listeners=PLAINTEXT://{{ ansible_host }}:{{ kafka_port }},CONTROLLER://{{ ansible_host }}:9093
+advertised.listeners=PLAINTEXT://{{ ansible_host }}:{{ kafka_port }}
 listener.security.protocol.map=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
 
 # Controller listener name
@@ -12,4 +12,4 @@ controller.listener.names=CONTROLLER
 # KRaft mode properties
 process.roles=broker,controller
 node.id={{ broker_id }}
-controller.quorum.voters={{ broker_id }}@{{ kafka_host }}:9093
+controller.quorum.voters={{ broker_id }}@{{ ansible_host }}:9093
