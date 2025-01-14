@@ -36,10 +36,7 @@ terraform {
 # Write outputs to a .txt file
 resource "local_file" "outputs" {
   content = <<EOT
-basiton-host ${module.compute.bastion_public_ip}
-application-host ${module.compute.application_private_ip}
-kafka-host ${module.compute.kafka_private_ip}
-database-host ${module.compute.database_private_ip}
+${module.compute.kafka_private_ip}
 EOT
   filename = "outputs.txt"
 }
