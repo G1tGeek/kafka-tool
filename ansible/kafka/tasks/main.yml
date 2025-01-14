@@ -33,13 +33,6 @@
         /opt/kafka_{{ kafka_version }}/bin/kafka-storage.sh random-uuid
       register: kraft_uuid
 
-    - name: Create Kafka KRaft configuration from template
-      template:
-        src: kafka-config.j2
-        dest: "{{ kafka_config_dir }}/kraft/server.properties"
-      vars:
-        kraft_uuid: "{{ kraft_uuid.stdout }}"
-
     - name: Format KRaft metadata directory
       command: >
         /opt/kafka_{{ kafka_version }}/bin/kafka-storage.sh format
