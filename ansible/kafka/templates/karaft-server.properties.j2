@@ -1,4 +1,4 @@
-broker.id=1
+# Kafka Broker Configuration in KRaft Mode
 
 # Listeners
 listeners={{ kafka_listeners }}
@@ -12,5 +12,5 @@ mode=kraft
 # Metadata log directory for storing Kafka metadata and UUID
 metadata.log.dir={{ kafka_metadata_log_dir }}
 
-# Other standard Kafka configurations
-zookeeper.connect=  
+# Zookeeper is not required in KRaft mode
+zookeeper.connect=
