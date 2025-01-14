@@ -21,9 +21,20 @@
     dest: /opt/
     remote_src: yes
 
+- name: Clean Kafka storage directory (if exists)
+  file:
+    path: /tmp/kraft-combined-logs
+    state: absent
+
 - name: Generate UUID for Kafka Cluster
-  command: bin/kafka-storage.sh random-uuid chdir=/opt/kafka_{{ kafka_version }}
+  command: bin/kafka-storage.sh random-uuid
+  args:
+    chdir: /opt/kafka_{{ kafka_version }}
   register: uuid_output
+
+- name: Debug Kafka Cluster ID
+  debug:
+    msg: "Kafka Cluster ID: {{ uuid_output.stdout }}"
 
 - name: Set Kafka Cluster ID
   set_fact:
@@ -56,7 +67,7 @@
 
 - name: Wait for Kafka to start
   wait_for:
-    host: "{{ ansible_hostname }}"
+    host: "{{ ansible_host }}"
     port: "{{ kafka_port }}"
     state: started
     delay: 10
@@ -67,7 +78,7 @@
   command: >
     {{ kafka_install_dir }}/bin/kafka-topics.sh
     --create --topic {{ topic_name }}
-    --bootstrap-server {{ ansible_hostname }}:{{ kafka_port }}
+    --bootstrap-server {{ ansible_host }}:{{ kafka_port }}
     --partitions 1 --replication-factor 1
   when: topic_name not in kafka_existing_topics
   register: kafka_create_topic
