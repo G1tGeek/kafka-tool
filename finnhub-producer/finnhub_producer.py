@@ -27,7 +27,7 @@ if __name__ == "__main__":
     while True:
         data = fetch_finnhub_data()
         if data:
-            producer.send("finnhub", data)
+            producer.send("FINNhub", data)
             producer.flush()
-            print(f"Data sent to Kafka topic 'finnhub': {data}")
+            print(f"Data sent to Kafka topic 'FINNhub': {data}")
         time.sleep(10)  # Wait 10 seconds before fetching data again
