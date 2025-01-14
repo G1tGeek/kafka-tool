@@ -13,6 +13,9 @@ controller.quorum.voters=1@{{ ansible_host }}:9093
 listeners=PLAINTEXT://{{ ansible_host }}:9092,CONTROLLER://{{ ansible_host }}:9093
 advertised.listeners=PLAINTEXT://{{ ansible_host }}:9092,CONTROLLER://{{ ansible_host }}:9093
 
+# Ensure controller.listener.names has a value present in 'listeners'
+controller.listener.names=CONTROLLER
+
 # Security protocols for listeners
 listener.security.protocol.map=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
 
