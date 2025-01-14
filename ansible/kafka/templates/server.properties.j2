@@ -1,0 +1,34 @@
+# Kafka Configuration for KRaft mode
+
+# Broker and controller role
+process.roles=broker,controller
+
+# Node ID
+node.id={{ kafka_node_id }}
+
+# Controller quorum voters
+controller.quorum.voters=1@{{ ansible_host }}:9093
+
+# Listeners
+listeners=PLAINTEXT://{{ ansible_host }}:9092,CONTROLLER://{{ ansible_host }}:9093
+advertised.listeners=PLAINTEXT://{{ ansible_host }}:9092,CONTROLLER://{{ ansible_host }}:9093
+
+# Inter-broker communication listener
+inter.broker.listener.name=PLAINTEXT
+
+# Kafka data directory
+log.dirs=/tmp/kraft-combined-logs
+
+# Number of partitions
+num.partitions=1
+
+# Kafka cluster ID
+# The ID is dynamically generated and set using Ansible facts
+log.retention.hours=168
+log.segment.bytes=1073741824
+log.retention.check.interval.ms=300000
+
+# Internal topics settings
+offsets.topic.replication.factor=1
+transaction.state.log.replication.factor=1
+transaction.state.log.min.isr=1
