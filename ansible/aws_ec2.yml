@@ -8,3 +8,4 @@ filters:
 
 compose:
   ansible_host: private_ip_address
+  kafka-host: private_ip_address
