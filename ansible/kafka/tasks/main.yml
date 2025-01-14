@@ -1,31 +1,6 @@
 - name: Update the system
   command: sudo apt update
 
-- name: Copy outputs.txt to the remote machine
-  copy:
-    src: "/var/lib/jenkins/workspace/one-click/ansible/outputs.txt"
-    dest: "/tmp/outputs.txt"
-
-- name: Read Terraform outputs file
-  slurp:
-    src: "/tmp/outputs.txt"
-  register: terraform_outputs_raw
-
-- name: Debug decoded Terraform outputs
-  debug:
-    msg: "{{ terraform_outputs_raw.content | b64decode }}"
-
-- name: Parse Terraform outputs into variables
-  set_fact:
-    kafka_host: >
-      {{
-        (terraform_outputs_raw.content | b64decode).splitlines() | select('match', '^kafka-host') | map('split', ' ') | map('last') | first
-      }}
-
-- name: Debug Kafka host
-  debug:
-    msg: "Kafka host IP is {{ kafka_host }}"
-
 - name: Ensure Kafka dependencies are installed
   package:
     name: "{{ item }}"
@@ -99,7 +74,7 @@
   command: >
     /opt/kafka_{{ kafka_version }}/bin/kafka-topics.sh
     --create
-    --bootstrap-server {{ kafka_host }}:{{ kafka_port }}
+    --bootstrap-server {{ ansible_host }}:{{ kafka_port }}
     --topic finnhub
     --partitions 1
     --replication-factor 1
