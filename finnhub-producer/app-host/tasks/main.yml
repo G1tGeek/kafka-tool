@@ -1,5 +1,14 @@
 ---
 # tasks file for app-host
+- name: Update the system
+  apt:
+    update_cache: yes
+
+- name: Installing pip
+  become: true
+  package:
+    name: python3-pip
+    state: present
 - name: Install required Python packages
   pip:
     name:
