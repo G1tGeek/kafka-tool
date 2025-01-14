@@ -80,5 +80,3 @@
     --create --topic FINNhub
     --bootstrap-server {{ ansible_host }}:{{ kafka_port }}
     --partitions 1 --replication-factor 1
-  when: topic_name not in kafka_existing_topics
-  register: kafka_create_topic
