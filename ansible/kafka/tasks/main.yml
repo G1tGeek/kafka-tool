@@ -1,6 +1,7 @@
 ---
 - name: Update the system
-  command: sudo apt update
+  apt:
+    update_cache: yes
 
 - name: Ensure Kafka dependencies are installed
   package:
@@ -20,17 +21,27 @@
     dest: /opt/
     remote_src: yes
 
-- name: Generate uuid
-  command: KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"  
+- name: Generate UUID for Kafka Cluster
+  command: bin/kafka-storage.sh random-uuid chdir=/opt/kafka_{{ kafka_version }}
+  register: uuid_output
 
-- name: Add uuid to configurations
-  command: bin/kafka-storage.sh format --standalone -t $KAFKA_CLUSTER_ID -c config/kraft/reconfig-server.properties
+- name: Set Kafka Cluster ID
+  set_fact:
+    kafka_cluster_id: "{{ uuid_output.stdout }}"
+
+- name: Format Kafka storage
+  command: >
+    bin/kafka-storage.sh format --standalone
+    -t {{ kafka_cluster_id }}
+    -c config/kraft/server.properties
+  args:
+    chdir: /opt/kafka_{{ kafka_version }}
 
 - name: Create Kafka systemd service file
   become: true
   template:
-    src: "kafka.service.j2"
-    dest: "/etc/systemd/system/kafka.service"
+    src: kafka.service.j2
+    dest: /etc/systemd/system/kafka.service
 
 - name: Reload systemd
   become: true
@@ -45,14 +56,18 @@
 
 - name: Wait for Kafka to start
   wait_for:
-    host: "ansible_host"
+    host: "{{ inventory_hostname }}"
     port: "{{ kafka_port }}"
     state: started
     delay: 10
     timeout: 60
 
-- name: Create Kafka topic {{ topic_name }}
+- name: Create Kafka topic
   become: true
-  command:
-    cmd: "{{ kafka_install_dir }}/bin/kafka-topics.sh --create --topic {{ topic_name }} --bootstrap-server {{ ansible_host }}:{{ kafka_port }} --partitions 1 --replication-factor 1"
-    creates: "{{ kafka_log_dirs }}/{{ topic_name }}"
+  command: >
+    {{ kafka_install_dir }}/bin/kafka-topics.sh
+    --create --topic {{ topic_name }}
+    --bootstrap-server {{ inventory_hostname }}:{{ kafka_port }}
+    --partitions 1 --replication-factor 1
+  when: topic_name not in kafka_existing_topics
+  register: kafka_create_topic
