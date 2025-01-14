@@ -1,5 +1,5 @@
 - name: Install Kafka Role
-  hosts: all
+  hosts: kafka-host
   become: yes
   roles: 
     - kafka
