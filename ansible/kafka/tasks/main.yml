@@ -19,66 +19,30 @@
         dest: /opt/
         remote_src: yes
 
-    - name: Ensure Kafka config and data directories exist
-      file:
-        path: "{{ item }}"
-        state: directory
-        mode: '0755'
-      with_items:
-        - "{{ kafka_config_dir }}"
-        - "{{ kafka_data_dir }}"
+    - name: Generate Kafka server properties in KRaft mode
+  become: true
+  template:
+    src: "kraft-server.properties.j2"
+    dest: "{{ kafka_install_dir }}/kafka_2.13-{{ kafka_version }}/config/server.properties"
 
-    - name: Generate a cluster ID using kafka-storage.sh
-      command: >
-        /opt/kafka_{{ kafka_version }}/bin/kafka-storage.sh random-uuid
-      register: kraft_uuid
+- name: Start Kafka broker in KRaft mode
+  become: true
+  command:
+    cmd: "{{ kafka_install_dir }}/kafka_2.13-{{ kafka_version }}/bin/kafka-server-start.sh {{ kafka_install_dir }}/kafka_2.13-{{ kafka_version }}/config/server.properties"
+    creates: "{{ kafka_log_dirs }}/meta"
+  async: 30
+  poll: 0
 
-    - name: Format KRaft metadata directory
-      command: >
-        /opt/kafka_{{ kafka_version }}/bin/kafka-storage.sh format
-        -t {{ kraft_uuid.stdout }}
-        -c {{ kafka_config_dir }}/kraft/server.properties
-      args:
-        creates: "{{ kafka_data_dir }}/meta.properties"
+- name: Wait for Kafka to start
+  wait_for:
+    host: "kafka-host"
+    port: 9092
+    state: started
+    delay: 10
+    timeout: 60
 
-    - name: Create systemd service for Kafka
-      template:
-        src: kafka.service.j2
-        dest: /etc/systemd/system/kafka.service
-      notify:
-        - reload kafka
-
-    - name: Reload systemd to register Kafka service
-      command: systemctl daemon-reload
-
-    - name: Enable Kafka service to start on boot
-      command: systemctl enable kafka
-
-    - name: Start Kafka service
-      command: systemctl start kafka
-
-    - name: Add Kafka to PATH
-      lineinfile:
-        path: /etc/profile
-        line: 'export PATH=$PATH:/opt/kafka_{{ kafka_version }}/bin'
-        create: yes
-
-    - name: Create Kafka topic "finnhub"
-      command: >
-        /opt/kafka_{{ kafka_version }}/bin/kafka-topics.sh
-        --create
-        --bootstrap-server {{ ansible_host }}:{{ kafka_port }}
-        --topic finnhub
-        --partitions 1
-        --replication-factor 1
-      args:
-        creates: "{{ kafka_data_dir }}/topic-finnhub"
-
-    - name: Ensure Kafka logs directory exists
-      file:
-        path: /opt/kafka/logs
-        state: directory
-        mode: '0755'
-
-    - name: Reload profile to apply PATH change
-      shell: bash -c 'source /etc/profile'
+- name: Create Kafka topic {{ topic_name }}
+  become: true
+  command:
+    cmd: "{{ kafka_install_dir }}/kafka_2.13-{{ kafka_version }}/bin/kafka-topics.sh --create --topic {{ topic_name }} --bootstrap-server kafka-host:9092 --partitions 1 --replication-factor 1"
+    creates: "{{ kafka_log_dirs }}/{{ topic_name }}"
