@@ -1,42 +1,52 @@
-    - name: Update the system
-      command: sudo apt update
+---
+- name: Update the system
+  command: sudo apt update
 
-    - name: Ensure Kafka dependencies are installed
-      package:
-        name: "{{ item }}"
-        state: present
-      with_items:
-        - openjdk-11-jdk
+- name: Ensure Kafka dependencies are installed
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - openjdk-11-jdk
 
-    - name: Download Kafka
-      get_url:
-        url: "{{ kafka_download_url }}"
-        dest: /tmp/kafka.tgz
+- name: Download Kafka
+  get_url:
+    url: "{{ kafka_download_url }}"
+    dest: /tmp/kafka.tgz
 
-    - name: Extract Kafka
-      unarchive:
-        src: /tmp/kafka.tgz
-        dest: /opt/
-        remote_src: yes
+- name: Extract Kafka
+  unarchive:
+    src: /tmp/kafka.tgz
+    dest: /opt/
+    remote_src: yes
 
-    - name: Generate Kafka server properties in KRaft mode
+- name: Generate Kafka server properties in KRaft mode
   become: true
   template:
     src: "kraft-server.properties.j2"
     dest: "{{ kafka_install_dir }}/kafka_2.13-{{ kafka_version }}/config/server.properties"
 
-- name: Start Kafka broker in KRaft mode
+- name: Create Kafka systemd service file
   become: true
-  command:
-    cmd: "{{ kafka_install_dir }}/kafka_2.13-{{ kafka_version }}/bin/kafka-server-start.sh {{ kafka_install_dir }}/kafka_2.13-{{ kafka_version }}/config/server.properties"
-    creates: "{{ kafka_log_dirs }}/meta"
-  async: 30
-  poll: 0
+  template:
+    src: "kafka.service.j2"
+    dest: "/etc/systemd/system/kafka.service"
+
+- name: Reload systemd
+  become: true
+  command: systemctl daemon-reload
+
+- name: Enable and start Kafka service
+  become: true
+  systemd:
+    name: kafka
+    state: started
+    enabled: yes
 
 - name: Wait for Kafka to start
   wait_for:
     host: "kafka-host"
-    port: 9092
+    port: "{{ kafka_port }}"
     state: started
     delay: 10
     timeout: 60
@@ -44,5 +54,5 @@
 - name: Create Kafka topic {{ topic_name }}
   become: true
   command:
-    cmd: "{{ kafka_install_dir }}/kafka_2.13-{{ kafka_version }}/bin/kafka-topics.sh --create --topic {{ topic_name }} --bootstrap-server kafka-host:9092 --partitions 1 --replication-factor 1"
+    cmd: "{{ kafka_install_dir }}/kafka_2.13-{{ kafka_version }}/bin/kafka-topics.sh --create --topic {{ topic_name }} --bootstrap-server kafka-host:{{ kafka_port }} --partitions 1 --replication-factor 1"
     creates: "{{ kafka_log_dirs }}/{{ topic_name }}"
