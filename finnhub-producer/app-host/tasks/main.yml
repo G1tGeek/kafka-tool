@@ -16,7 +16,7 @@
       - requests
 
 - name: Deploy Finnhub Producer script
-  copy:
+  template:
     src: finnhub_producer.py.j2
     dest: /opt/finnhub_producer.py
     mode: '0755'
