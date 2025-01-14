@@ -2,7 +2,7 @@
 # handlers file for app-host
 - name: reload finnhub producer
   become: true
-    systemd:
-      name: finnhub-producer
-      state: reloaded
-      enabled: yes
+  systemd:
+    name: finnhub-producer
+    state: reloaded
+    enabled: yes
