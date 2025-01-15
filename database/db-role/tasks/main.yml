@@ -15,7 +15,7 @@
 
 - name: Download libssl1.1 package
   get_url:
-    url: https://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl-dev_1.0.1f-1ubuntu2.27_amd64.deb
+    url: https://archive.ubuntu.com/ubuntu/pool/main/o/openssl/openssl_3.4.0-1ubuntu2_amd64.deb
     dest: /tmp/libssl1.1.deb
 
 - name: Install libssl1.1 package
