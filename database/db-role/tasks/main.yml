@@ -7,9 +7,9 @@
     url: https://repo.mongodb.org/apt/ubuntu/dists/jammy/mongodb-org/8.0/multiverse/binary-amd64/mongodb-org-server_8.0.4_amd64.deb
     dest: /tmp/mongo.deb
 
-- name: Install Mongo db
+- name: Install MongoDB package
   dpkg:
-    deb: /tmp/mongo.deb
+    name: /tmp/mongo.deb
 
 - name: Replace MongoDB configuration file
   template:
@@ -30,4 +30,3 @@
     rule: allow
     port: 27017
     proto: tcp
-
