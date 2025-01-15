@@ -14,7 +14,7 @@
 
 - name: Ensure the Kafka Connect plugin path is configured
   lineinfile:
-    path: "/opt/kafka/config/connect-standalone.properties"
+    path: "{{ kafka_dir }}/config/connect-standalone.properties"
     regexp: '^plugin.path='
     line: "plugin.path={{ kafka_dir }}/libs"
     create: yes
@@ -26,6 +26,6 @@
 
 - name: Start Kafka Connect in standalone mode
   command: >
-    /opt/kafka/bin/connect-standalone.sh {{ kafka_dir }}/config/connect-standalone.properties{{ kafka_dir }}/config/mausam-to-mongo.properties
+    /opt/kafka/bin/connect-standalone.sh {{ kafka_dir }}/config/connect-standalone.properties {{ kafka_dir }}/config/API-to-mongo.properties
   async: 30
   poll: 0
