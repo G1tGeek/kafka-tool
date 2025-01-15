@@ -1,0 +1,38 @@
+---
+# tasks file for app-host
+- name: Update the system
+  apt:
+    update_cache: yes
+
+- name: Installing pip
+  become: true
+  package:
+    name: python3-pip
+    state: present
+- name: Install required Python packages
+  pip:
+    name:
+      - kafka-python
+      - requests
+
+- name: Deploy Finnhub Producer script
+  template:
+    src: finnhub_producer.py.j2
+    dest: /opt/finnhub_producer.py
+    mode: '0755'
+
+- name: Create systemd service for Finnhub Producer
+  template:
+    src: finnhub-producer.service.j2
+    dest: /etc/systemd/system/finnhub-producer.service
+  notify:
+    - reload finnhub producer
+
+- name: Reload systemd to register Finnhub Producer service
+  command: systemctl daemon-reload
+
+- name: Enable Finnhub Producer service to start on boot
+  command: systemctl enable finnhub-producer
+
+- name: Start Finnhub Producer service
+  command: systemctl start finnhub-producer

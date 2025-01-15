@@ -1,0 +1,5 @@
+- name: Install Kafka Producer API
+  hosts: all
+  become: yes
+  roles: 
+    - app-host
