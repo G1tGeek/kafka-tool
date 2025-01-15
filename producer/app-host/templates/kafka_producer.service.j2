@@ -1,0 +1,13 @@
+[Unit]
+Description=Kafka Producer Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /opt/kafka_producer.py
+WorkingDirectory=/opt/kafka_producer
+Restart=always
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
