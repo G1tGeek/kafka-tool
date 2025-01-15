@@ -1,7 +1,0 @@
-- name: reload finnhub producer
-  become: true
-  systemd:
-    name: finnhub-producer
-    state: restarted
-    enabled: yes
-
