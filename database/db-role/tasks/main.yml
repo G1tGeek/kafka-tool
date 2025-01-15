@@ -18,14 +18,15 @@
 
 # Download libssl1.1
 - name: Download libssl1.1
-  get_url:
+  ansible.builtin.get_url:
     url: http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
     dest: /tmp/libssl1.1.deb
 
 # Install libssl1.1
 - name: Install libssl1.1
-  ansible.builtin.dpkg:
-    deb: /tmp/libssl1.1.deb
+  ansible.builtin.shell: "dpkg -i /tmp/libssl1.1.deb"
+  args:
+    warn: false
 
 # Install MongoDB package
 - name: Install MongoDB
