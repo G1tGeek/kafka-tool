@@ -1,6 +1,7 @@
-- name: reload producer
-  become: true
+- name: Reload systemd daemon
+  command: systemctl daemon-reload
+
+- name: Restart Kafka producer service
   systemd:
-    name: producer
+    name: kafka_producer
     state: restarted
-    enabled: yes
