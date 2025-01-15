@@ -1,14 +1,26 @@
-- name: Update package cache
-  apt:
+---
+# Import the MongoDB public GPG key
+- name: Import MongoDB public GPG key
+  ansible.builtin.apt_key:
+    url: https://www.mongodb.org/static/pgp/server-6.0.asc
+    state: present
+
+# Create MongoDB list file
+- name: Add MongoDB repository to sources list
+  ansible.builtin.apt_repository:
+    repo: "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse"
+    state: present
+
+# Update the local package database
+- name: Update apt cache
+  ansible.builtin.apt:
     update_cache: yes
 
-- name: Download MongoDB package
-  get_url:
-    url: https://repo.mongodb.org/apt/ubuntu/dists/jammy/mongodb-org/8.0/multiverse/binary-amd64/mongodb-org-server_8.0.4_amd64.deb
-    dest: /tmp/mongo.deb
-
-- name: Install MongoDB package using dpkg
-  command: dpkg -i /tmp/mongo.deb
+# Install MongoDB package
+- name: Install MongoDB
+  ansible.builtin.apt:
+    name: mongodb-org
+    state: present
 
 - name: Replace MongoDB configuration file
   template:
@@ -18,14 +30,14 @@
     group: mongodb
     mode: '0644'
 
+# Start MongoDB service
 - name: Start MongoDB service
-  service:
+  ansible.builtin.systemd:
     name: mongod
     state: started
-    enabled: yes
 
-- name: Allow MongoDB on port 27017 in UFW
-  ufw:
-    rule: allow
-    port: 27017
-    proto: tcp
+# Enable MongoDB service to start on boot
+- name: Enable MongoDB to start on boot
+  ansible.builtin.systemd:
+    name: mongod
+    enabled: yes
