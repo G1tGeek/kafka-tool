@@ -36,6 +36,6 @@
 
 # Create a database named "mausam"
 - name: Create a database named mausam
-  ansible.builtin.command: "/usr/bin/mongo --eval 'use mausam'"
+  ansible.builtin.command: "/usr/bin/mongosh --eval 'use mausam'"
   args:
     warn: false
