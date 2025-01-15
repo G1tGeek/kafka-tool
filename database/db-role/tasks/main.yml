@@ -1,4 +1,3 @@
----
 # Import the MongoDB public GPG key
 - name: Import MongoDB public GPG key
   ansible.builtin.apt_key:
@@ -16,17 +15,25 @@
   ansible.builtin.apt:
     update_cache: yes
 
-# Download libssl1.1
+# Install required dependencies
+- name: Install required dependencies
+  ansible.builtin.apt:
+    name: 
+      - libc6
+      - libc6-dev
+    state: present
+
+# Download libssl1.1 from Ubuntu repositories instead
 - name: Download libssl1.1
   ansible.builtin.get_url:
-    url: https://snapshot.debian.org/archive/debian/20221106T000000Z/pool/main/o/openssl/libssl1.1_1.1.1n-0+deb11u3_amd64.deb
+    url: http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
     dest: /tmp/libssl1.1.deb
 
 # Install libssl1.1
 - name: Install libssl1.1
-  ansible.builtin.shell: "dpkg -i /tmp/libssl1.1.deb"
-  args:
-    warn: false
+  ansible.builtin.apt:
+    deb: /tmp/libssl1.1.deb
+    state: present
 
 # Install MongoDB package
 - name: Install MongoDB
