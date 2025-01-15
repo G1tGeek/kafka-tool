@@ -1,7 +1,1 @@
-- name: reload producer
-  become: true
-  systemd:
-    name: producer
-    state: restarted
-    enabled: yes
 
