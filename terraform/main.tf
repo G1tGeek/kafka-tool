@@ -33,10 +33,16 @@ terraform {
   }
 }
 
-resource "local_file" "outputs" {
+resource "local_file" "output1" {
   content = <<EOT
 ${module.compute.kafka_private_ip}
 EOT
-  filename = "outputs.txt"
+  filename = "kafka.txt"
 }
 
+resource "local_file" "output2" {
+  content = <<EOT
+${module.compute.database_private_ip}
+EOT
+  filename = "database.txt"
+}
