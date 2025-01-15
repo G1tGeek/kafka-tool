@@ -3,29 +3,29 @@
 
 - name: Ensure the Kafka libs directory exists
   file:
-    path: "/opt/kafka/libs"
+    path: "{{ kafka_dir }}/libs"
     state: directory
     mode: '0755'
 
 - name: Install MongoDB Kafka Connector
   get_url:
     url: "https://repo1.maven.org/maven2/org/apache/kafka/connect-api/3.9.0/connect-api-3.9.0-javadoc.jar"
-    dest: "/opt/kafka/libs/mongodb-kafka-connect-{{ connector_version }}.jar"
+    dest: "{{ kafka_dir }}/libs/mongodb-kafka-connect-{{ connector_version }}.jar"
 
 - name: Ensure the Kafka Connect plugin path is configured
   lineinfile:
     path: "/opt/kafka/config/connect-standalone.properties"
     regexp: '^plugin.path='
-    line: "plugin.path=/opt/kafka/libs"
+    line: "plugin.path={{ kafka_dir }}/libs"
     create: yes
 
 - name: Create Kafka Connect MongoDB Sink connector configuration
   template:
-    src: mausam-to-mongo.properties.j2
-    dest: "/opt/kafka/config/mausam-to-mongo.properties"
+    src: API-to-mongo.properties.j2
+    dest: "{{ kafka_dir }}/config/API-to-mongo.properties"
 
 - name: Start Kafka Connect in standalone mode
   command: >
-    /opt/kafka/bin/connect-standalone.sh /opt/kafka/config/connect-standalone.properties /opt/kafka/config/mausam-to-mongo.properties
+    /opt/kafka/bin/connect-standalone.sh {{ kafka_dir }}/config/connect-standalone.properties{{ kafka_dir }}/config/mausam-to-mongo.properties
   async: 30
   poll: 0
