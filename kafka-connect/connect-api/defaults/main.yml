@@ -1,6 +1,6 @@
 ---
 # defaults file for connect-api
-kafka_topic: "mausam"
+kafka_topic: "API"
 mongo_database: "weather"
 mongo_collection: "weather_data"
 kafka_connect_port: 8083
