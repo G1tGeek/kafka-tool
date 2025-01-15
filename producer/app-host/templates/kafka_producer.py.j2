@@ -1,0 +1,27 @@
+import time
+import json
+import subprocess
+from kafka import KafkaProducer
+
+
+producer = KafkaProducer(
+    bootstrap_servers='{{ kafka_host }}:9092', 
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')
+)
+
+url = 'https://api.tomorrow.io/v4/weather/forecast?location=42.3478,-71.0466&apikey=rU7aKOmGD3GVFqfn2DiYgiqgPUIuYvAI'
+
+def get_weather_data():
+    result = subprocess.run(['curl', '--request', 'GET', '--url', url], capture_output=True, text=True)
+    return json.loads(result.stdout) 
+def send_to_kafka(data):
+    """Function to send data to Kafka topic"""
+    producer.send('API', value=data) 
+    producer.flush()
+
+while True:
+    data = get_weather_data()  #
+    send_to_kafka(data) 
+    print("Data sent to Kafka:", data)
+    
+    time.sleep(14400)  
