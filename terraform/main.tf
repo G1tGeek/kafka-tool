@@ -33,10 +33,16 @@ terraform {
   }
 }
 
-# Write outputs to a .txt file
 resource "local_file" "outputs" {
   content = <<EOT
 ${module.compute.kafka_private_ip}
 EOT
-  filename = "outputs.txt"
+  filename = "kafka.txt"
+}
+
+resource "local_file" "outputs" {
+  content = <<EOT
+${module.compute.kafka_private_ip}
+EOT
+  filename = "kafka.txt"
 }
