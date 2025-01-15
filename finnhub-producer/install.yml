@@ -1,4 +1,4 @@
-- name: Install Kafka Role
+- name: Install Kafka Producer API
   hosts: all
   become: yes
   roles: 
