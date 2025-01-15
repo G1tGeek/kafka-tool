@@ -7,9 +7,8 @@
     url: https://repo.mongodb.org/apt/ubuntu/dists/jammy/mongodb-org/8.0/multiverse/binary-amd64/mongodb-org-server_8.0.4_amd64.deb
     dest: /tmp/mongo.deb
 
-- name: Install MongoDB package
-  dpkg:
-    name: /tmp/mongo.deb
+- name: Install MongoDB package using dpkg
+  command: dpkg -i /tmp/mongo.deb
 
 - name: Replace MongoDB configuration file
   template:
