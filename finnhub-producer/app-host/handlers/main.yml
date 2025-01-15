@@ -1,6 +1,6 @@
 ---
 # handlers file for app-host
-- name: restart finnhub producer
+- name: reload finnhub producer
   become: true
   systemd:
     name: finnhub-producer
