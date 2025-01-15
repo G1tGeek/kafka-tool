@@ -30,7 +30,7 @@ if __name__ == "__main__":
     while True:
         data = fetch_weather_data()
         if data:
-            producer.send("mausam", data)  
+            producer.send("API", data)  
             producer.flush()
-            print(f"Data sent to Kafka topic 'mausam': {data}")
+            print(f"Data sent to Kafka topic 'API': {data}")
         time.sleep(10)  # Wait 10 seconds before fetching data again
