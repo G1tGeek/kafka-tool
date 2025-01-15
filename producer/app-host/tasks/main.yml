@@ -14,7 +14,7 @@
     update_cache: yes
 
 - name: Copy the Kafka producer script
-  copy:
+  template:
     src: kafka_producer.py.j2
     dest: /opt/kafka_producer.py
     mode: '0755'
