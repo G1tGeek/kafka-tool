@@ -9,7 +9,7 @@
 
 - name: Install MongoDB Kafka Connector
   get_url:
-    url: "https://repo1.maven.org/maven2/org/mongodb/kafka/connect/mongodb-kafka-connect/{{ connector_version }}/mongodb-kafka-connect-{{ connector_version }}.jar"
+    url: "https://repo1.maven.org/maven2/org/apache/kafka/connect-api/3.9.0/connect-api-3.9.0-javadoc.jar"
     dest: "/opt/kafka/libs/mongodb-kafka-connect-{{ connector_version }}.jar"
 
 - name: Ensure the Kafka Connect plugin path is configured
