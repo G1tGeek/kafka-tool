@@ -5,3 +5,4 @@ mongo_database: "weather"
 mongo_collection: "weather_data"
 kafka_connect_port: 8083
 connector_version: "3.9.0"
+kafka_dir: "/opt/kafka_2.12-3.9.0"
