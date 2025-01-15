@@ -9,24 +9,20 @@
   apt:
     name:
       - python3-pip
-      - python3-kafka
       - curl
     state: present
     update_cache: yes
+
+- name: Ensure kafka-python module is installed
+  pip:
+    name: kafka-python
+    executable: python3
 
 - name: Copy the Kafka producer script
   template:
     src: kafka_producer.py.j2
     dest: /opt/kafka_producer.py
     mode: '0755'
-
-- name: Create a systemd service to run the script
-  template:
-    src: kafka_producer.service.j2
-    dest: /etc/systemd/system/kafka_producer.service
-  notify:
-    - Reload systemd daemon
-    - Restart Kafka producer service
 
 - name: Ensure the script has correct permissions
   file:
@@ -35,8 +31,21 @@
     group: ubuntu
     mode: '0755'
 
-- name: Start and enable Kafka producer service
-  systemd:
-    name: kafka_producer
-    state: started
-    enabled: yes
+- name: Stop any existing Kafka producer process
+  shell: |
+    pkill -f "/usr/bin/python3 /opt/kafka_producer.py" || true
+  ignore_errors: true
+
+- name: Run Kafka producer script in the background
+  shell: |
+    nohup /usr/bin/python3 /opt/kafka_producer.py > /var/log/kafka_producer.log 2>&1 &
+  args:
+    executable: /bin/bash
+
+- name: Ensure Kafka producer script is running
+  shell: |
+    pgrep -f "/usr/bin/python3 /opt/kafka_producer.py"
+  register: producer_status
+  retries: 3
+  delay: 5
+  until: producer_status.rc == 0
