@@ -1,36 +1,30 @@
-import time
 import requests
 from kafka import KafkaProducer
 import json
 
-# Kafka producer setup
-producer = KafkaProducer(
-    bootstrap_servers='{{ kafka_host }}:9092',
-    value_serializer=lambda v: json.dumps(v).encode('utf-8')
-)
+# Kafka configuration
+kafka_broker = '{{{ kafka_host }}:9092'  # Broker address
+topic_name = 'API'  # Topic to send data to
 
-# Visual Crossing Weather API setup
-API_KEY = "N9QJNA6A4HB8FTKQ3URMAGBQS"
-VISUALCROSSING_URL = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/meerut"
+# Fetch weather data from the API
+url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/meerut?unitGroup=metric&key=N9QJNA6A4HB8FTKQ3URMAGBQS&contentType=json"
 
-def fetch_weather_data():
-    try:
-        response = requests.get(
-            VISUALCROSSING_URL,
-            params={"unitGroup": "metric", "key": API_KEY, "contentType": "json"}
-        )
-        response.raise_for_status()
-        data = response.json()
-        return data
-    except requests.RequestException as e:
-        print(f"Error fetching data from Visual Crossing: {e}")
-        return None
+# Send a request to the API
+response = requests.get(url)
 
-if __name__ == "__main__":
-    while True:
-        data = fetch_weather_data()
-        if data:
-            producer.send("API", data)  
-            producer.flush()
-            print(f"Data sent to Kafka topic 'API': {data}")
-        time.sleep(10)  # Wait 10 seconds before fetching data again
+if response.status_code == 200:
+    weather_data = response.json()  # Parse the JSON response
+    
+    # Initialize Kafka producer
+    producer = KafkaProducer(
+        bootstrap_servers=kafka_broker,
+        value_serializer=lambda v: json.dumps(v).encode('utf-8')  # Serialize the data to JSON
+    )
+    
+    # Send the weather data to the Kafka topic
+    producer.send(topic_name, value=weather_data)
+    producer.flush()  # Ensure data is sent before exiting
+    print(f"Data sent to topic {topic_name}")
+    
+else:
+    print(f"Failed to fetch data. Status code: {response.status_code}")
