@@ -5,7 +5,7 @@
     url: https://www.mongodb.org/static/pgp/server-6.0.asc
     state: present
 
-# Create MongoDB list file
+# Add MongoDB repository to sources list
 - name: Add MongoDB repository to sources list
   ansible.builtin.apt_repository:
     repo: "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse"
@@ -15,6 +15,17 @@
 - name: Update apt cache
   ansible.builtin.apt:
     update_cache: yes
+
+# Download libssl1.1
+- name: Download libssl1.1
+  get_url:
+    url: http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
+    dest: /tmp/libssl1.1.deb
+
+# Install libssl1.1
+- name: Install libssl1.1
+  ansible.builtin.dpkg:
+    deb: /tmp/libssl1.1.deb
 
 # Install MongoDB package
 - name: Install MongoDB
