@@ -1,5 +1,6 @@
 ---
 # tasks file for app-host
+
 - name: Update the system
   apt:
     update_cache: yes
@@ -23,6 +24,16 @@
   template:
     src: kafka_producer.service.j2
     dest: /etc/systemd/system/kafka_producer.service
+  notify:
+    - Reload systemd daemon
+    - Restart Kafka producer service
+
+- name: Ensure the script has correct permissions
+  file:
+    path: /opt/kafka_producer.py
+    owner: ubuntu
+    group: ubuntu
+    mode: '0755'
 
 - name: Start and enable Kafka producer service
   systemd:
