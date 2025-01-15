@@ -1,40 +1,88 @@
 ---
-# tasks file for mongodb
-
-- name: Update package cache
-  ansible.builtin.apt:
+- name: Update the system
+  apt:
     update_cache: yes
 
-- name: Download MongoDB package
-  ansible.builtin.get_url:
-    url: https://repo.mongodb.org/apt/ubuntu/dists/jammy/mongodb-org/8.0/multiverse/binary-amd64/mongodb-org-server_8.0.4_amd64.deb
-    dest: /tmp/mongo.deb
-
-- name: Install MongoDB package
-  ansible.builtin.dpkg:
-    deb: /tmp/mongo.deb
-
-- name: Fix broken dependencies (if needed)
-  ansible.builtin.apt:
+- name: Ensure Kafka dependencies are installed
+  package:
+    name: "{{ item }}"
     state: present
-    update_cache: yes
+  with_items:
+    - openjdk-11-jdk
 
-- name: Replace MongoDB configuration file
-  ansible.builtin.template:
-    src: mongod.conf.j2
-    dest: /etc/mongod.conf
-    owner: mongodb
-    group: mongodb
-    mode: '0644'
+- name: Download Kafka
+  get_url:
+    url: "{{ kafka_download_url }}"
+    dest: /tmp/kafka.tgz
 
-- name: Start MongoDB service
-  ansible.builtin.service:
-    name: mongod
+- name: Extract Kafka
+  unarchive:
+    src: /tmp/kafka.tgz
+    dest: /opt/
+    remote_src: yes
+
+- name: Clean Kafka storage directory (if exists)
+  file:
+    path: /tmp/kraft-combined-logs
+    state: absent
+
+- name: Generate UUID for Kafka Cluster
+  command: bin/kafka-storage.sh random-uuid
+  args:
+    chdir: /opt/kafka_{{ kafka_version }}
+  register: uuid_output
+
+- name: Debug Kafka Cluster ID
+  debug:
+    msg: "Kafka Cluster ID: {{ uuid_output.stdout }}"
+
+- name: Generate Kafka server.properties from template
+  become: true
+  template:
+    src: server.properties.j2
+    dest: /opt/kafka_{{ kafka_version }}/config/kraft/server.properties
+    
+- name: Set Kafka Cluster ID
+  set_fact:
+    kafka_cluster_id: "{{ uuid_output.stdout }}"
+
+- name: Format Kafka storage
+  command: >
+    bin/kafka-storage.sh format --standalone
+    -t {{ kafka_cluster_id }}
+    -c config/kraft/server.properties
+  args:
+    chdir: /opt/kafka_{{ kafka_version }}
+
+- name: Create Kafka systemd service file
+  become: true
+  template:
+    src: kafka.service.j2
+    dest: /etc/systemd/system/kafka.service
+
+- name: Reload systemd
+  become: true
+  command: systemctl daemon-reload
+
+- name: Enable and start Kafka service
+  become: true
+  systemd:
+    name: kafka
     state: started
     enabled: yes
 
-- name: Allow MongoDB on port 27017 in UFW
-  ansible.builtin.ufw:
-    rule: allow
-    port: 27017
-    proto: tcp
+- name: Wait for Kafka to start
+  wait_for:
+    host: "{{ ansible_host }}"
+    port: "{{ kafka_port }}"
+    state: started
+    delay: 10
+    timeout: 60
+
+- name: Create Kafka topic
+  become: true
+  command: >
+    {{ kafka_install_dir }}/bin/kafka-topics.sh
+    --create --topic mausam
+    --bootstrap-server {{ ansible_host }}:{{ kafka_port }}
+    --partitions 1 --replication-factor 1
