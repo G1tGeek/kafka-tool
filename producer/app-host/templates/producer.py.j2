@@ -9,7 +9,7 @@ topic_name = 'API'  # Topic to send data to
 
 
 def fetch_and_send_data():
-    url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/meerut?unitGroup=metric&key=N9QJNA6A4HB8FTKQ3URMAGBQS&contentType=json"
+    url = "https://api.tomorrow.io/v4/weather/forecast?location=42.3478,-71.0466&apikey=rU7aKOmGD3GVFqfn2DiYgiqgPUIuYvAI"
 
     response = requests.get(url)
 
