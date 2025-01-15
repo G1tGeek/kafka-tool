@@ -26,6 +26,6 @@
 
 - name: Start Kafka Connect in standalone mode
   command: >
-    /opt/kafka/bin/connect-standalone.sh {{ kafka_dir }}/config/connect-standalone.properties {{ kafka_dir }}/config/API-to-mongo.properties
+    {{ kafka_dir }}/bin/connect-standalone.sh {{ kafka_dir }}/config/connect-standalone.properties {{ kafka_dir }}/config/API-to-mongo.properties
   async: 30
   poll: 0
