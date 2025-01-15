@@ -83,7 +83,7 @@
   become: true
   command: >
     {{ kafka_install_dir }}/bin/kafka-topics.sh
-    --create --topic FINNhub
+    --create --topic mausam
     --bootstrap-server {{ ansible_host }}:{{ kafka_port }}
     --partitions 1 --replication-factor 1
 
