@@ -3,7 +3,7 @@
 - name: Update the system
   apt:
     update_cache: yes
-    
+
 - name: Install necessary dependencies
   apt:
     name:
@@ -29,4 +29,3 @@
     name: kafka_producer
     state: started
     enabled: yes
-
