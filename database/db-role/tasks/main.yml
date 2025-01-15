@@ -34,8 +34,8 @@
     name: mongod
     enabled: yes
 
-# Create a database named "mausam"
-- name: Create a database named mausam
-  ansible.builtin.command: "/usr/bin/mongosh --eval 'use mausam'"
+# Create a database 
+- name: Create a database named Weather
+  ansible.builtin.command: "/usr/bin/mongosh --eval 'use weather'"
   args:
     warn: false
