@@ -22,6 +22,11 @@
     name: mongodb-org
     state: present
 
+- name: Update MongoDB configuration
+  template:
+    src: mongod.conf.j2
+    dest: /etc/mongod.conf
+
 # Start MongoDB service
 - name: Start MongoDB service
   ansible.builtin.systemd:
