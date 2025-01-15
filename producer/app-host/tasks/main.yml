@@ -16,7 +16,7 @@
 - name: Ensure kafka-python module is installed
   pip:
     name: kafka-python
-    executable: python3
+    executable: /usr/bin/pip3
 
 - name: Copy the Kafka producer script
   template:
