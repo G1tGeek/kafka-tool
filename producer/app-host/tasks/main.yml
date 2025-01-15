@@ -3,36 +3,30 @@
 - name: Update the system
   apt:
     update_cache: yes
-
-- name: Installing pip
-  become: true
-  package:
-    name: python3-pip
-    state: present
-- name: Install required Python packages
-  pip:
+    
+- name: Install necessary dependencies
+  apt:
     name:
-      - kafka-python
-      - requests
+      - python3-pip
+      - python3-kafka
+      - curl
+    state: present
+    update_cache: yes
 
-- name: Deploy Producer script
-  template:
-    src: producer.py.j2
-    dest: /opt/producer.py
+- name: Copy the Kafka producer script
+  copy:
+    src: kafka_producer.py.j2
+    dest: /opt/kafka_producer.py
     mode: '0755'
 
-- name: Create systemd service for Producer
+- name: Create a systemd service to run the script
   template:
-    src: producer.service.j2
-    dest: /etc/systemd/system/producer.service
-  notify:
-    - reload producer
+    src: kafka_producer.service.j2
+    dest: /etc/systemd/system/kafka_producer.service
 
-- name: Reload systemd to register Producer service
-  command: systemctl daemon-reload
+- name: Start and enable Kafka producer service
+  systemd:
+    name: kafka_producer
+    state: started
+    enabled: yes
 
-- name: Enable Producer service to start on boot
-  command: systemctl enable producer
-
-- name: Start Producer service
-  command: systemctl start producer
