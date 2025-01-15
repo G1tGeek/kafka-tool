@@ -1,0 +1,27 @@
+---
+# tasks file for connect-api
+# roles/kafka_connect_mongo/tasks/main.yml
+
+- name: Install MongoDB Kafka Connector
+  get_url:
+    url: "https://repo1.maven.org/maven2/org/apache/kafka/connect-api/3.9.0/connect-api-3.9.0-javadoc.jar"
+    dest: "/opt/kafka/libs/mongodb-kafka-connect-{{ connector_version }}.jar"
+
+- name: Ensure the Kafka Connect plugin path is configured
+  lineinfile:
+    path: "/opt/kafka/config/connect-standalone.properties"
+    regexp: '^plugin.path='
+    line: "plugin.path=/opt/kafka/libs"
+    create: yes
+
+- name: Create Kafka Connect MongoDB Sink connector configuration
+  template:
+    src: mausam-to-mongo.properties.j2
+    dest: "/opt/kafka/config/mausam-to-mongo.properties"
+
+- name: Start Kafka Connect in standalone mode (optional)
+  command: >
+    /opt/kafka/bin/connect-standalone.sh /opt/kafka/config/connect-standalone.properties /opt/kafka/config/mausam-to-mongo.properties
+  async: 30
+  poll: 0
+  when: ansible_os_family == 'Debian'
