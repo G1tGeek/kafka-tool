@@ -1,0 +1,20 @@
+# mongod.conf
+
+# Where and how to store data.
+storage:
+  dbPath: /var/lib/mongodb
+  journal:
+    enabled: true
+
+# network interfaces
+net:
+  port: 27017
+  bindIp: 0.0.0.0  # Listen on all network interfaces
+
+# Process Management
+processManagement:
+  timeZoneInfo: /usr/share/zoneinfo
+
+# Security settings
+security:
+  authorization: disabled  # Enable if you want authentication

@@ -1,0 +1,45 @@
+---
+# tasks file for db-role
+- name: Update package cache
+  apt:
+    update_cache: yes
+
+- name: Install MongoDB key
+  apt_key:
+    url: https://www.mongodb.org/static/pgp/server-6.0.asc
+    state: present
+
+- name: Add MongoDB repository
+  apt_repository:
+    repo: "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse"
+    state: present
+    filename: mongodb-org
+
+- name: Update mongoDB repo
+  apt:
+    update_cache: yes
+
+- name: Install MongoDB
+  apt:
+    name: mongodb-org
+    state: present
+
+- name: Replace MongoDB configuration file
+  template:
+    src: mongod.conf.j2
+    dest: /etc/mongod.conf
+    owner: mongodb
+    group: mongodb
+    mode: '0644'
+
+- name: Start MongoDB service
+  service:
+    name: mongod
+    state: started
+    enabled: yes
+
+- name: Allow MongoDB on port 27017 in UFW
+  ufw:
+    rule: allow
+    port: 27017
+    proto: tcp
