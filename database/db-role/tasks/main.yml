@@ -1,10 +1,11 @@
+---
 # Import the MongoDB public GPG key
 - name: Import MongoDB public GPG key
   ansible.builtin.apt_key:
     url: https://www.mongodb.org/static/pgp/server-6.0.asc
     state: present
 
-# Add MongoDB repository to sources list
+# Create MongoDB list file
 - name: Add MongoDB repository to sources list
   ansible.builtin.apt_repository:
     repo: "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse"
@@ -14,43 +15,6 @@
 - name: Update apt cache
   ansible.builtin.apt:
     update_cache: yes
-
-# Fix broken packages
-- name: Fix broken packages
-  ansible.builtin.apt:
-    name: "*"
-    state: fixed
-
-# Install base dependencies first
-- name: Install base dependencies
-  ansible.builtin.apt:
-    name:
-      - libc-dev-bin
-      - linux-libc-dev
-      - libcrypt-dev
-      - rpcsvc-proto
-      - libtirpc-dev
-      - libnsl-dev
-    state: present
-    update_cache: yes
-
-# Now install libc6-dev
-- name: Install libc6-dev
-  ansible.builtin.apt:
-    name: libc6-dev
-    state: present
-
-# Download libssl1.1 from Ubuntu repositories
-- name: Download libssl1.1
-  ansible.builtin.get_url:
-    url: http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
-    dest: /tmp/libssl1.1.deb
-
-# Install libssl1.1
-- name: Install libssl1.1
-  ansible.builtin.apt:
-    deb: /tmp/libssl1.1.deb
-    state: present
 
 # Install MongoDB package
 - name: Install MongoDB
