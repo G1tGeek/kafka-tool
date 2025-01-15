@@ -22,6 +22,14 @@
     name: mongodb-org
     state: present
 
+- name: Replace MongoDB configuration file
+  template:
+    src: mongod.conf.j2
+    dest: /etc/mongod.conf
+    owner: mongodb
+    group: mongodb
+    mode: '0644'
+
 # Start MongoDB service
 - name: Start MongoDB service
   ansible.builtin.systemd:
