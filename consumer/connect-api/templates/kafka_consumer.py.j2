@@ -11,7 +11,7 @@ consumer = KafkaConsumer(
     auto_offset_reset='earliest',
 )
 
-client = pymongo.MongoClient("mongodb://{{ kafka_host }}:27017")  # Replace with actual MongoDB URI (e.g., 'mongodb://localhost:27017')
+client = pymongo.MongoClient("mongodb://{{ ansible_host }}:27017")  # Replace with actual MongoDB URI (e.g., 'mongodb://localhost:27017')
 db = client["weather"]  # MongoDB database name
 collection = db["weather_data"]  # MongoDB collection name
 
