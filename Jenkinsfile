@@ -18,8 +18,7 @@ pipeline {
         
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/G1tGeek/kafka-tool.git'
-                sh "ls"
+                git branch: 'main', credentialsId: 'github', url: 'https://github.com/G1tGeek/kafka-tool.git'
             }
         }
         
