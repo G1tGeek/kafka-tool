@@ -1,1 +1,22 @@
 
+from kafka import KafkaConsumer
+import pymongo
+import json
+
+# Kafka consumer setup
+consumer = KafkaConsumer(
+    'API',  # Kafka topic name
+    bootstrap_servers=['{{ kafka_host }}'],  
+    group_id='weather-01',
+    auto_offset_reset='earliest',
+)
+
+client = pymongo.MongoClient("mongodb://{{ ansible_host }}:27017")  # Replace with actual MongoDB URI (e.g., 'mongodb://localhost:27017')
+db = client["weather"]  # MongoDB database name
+collection = db["weather_data"]  # MongoDB collection name
+
+# Consume messages and send them to MongoDB
+for message in consumer:
+    data = json.loads(message.value.decode('utf-8'))
+    collection.insert_one(data)
+    print(f"Inserted data: {data}")
