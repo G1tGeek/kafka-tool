@@ -1,5 +1,0 @@
-- name: Create Kafka Connect API
-  hosts: all
-  become: yes
-  roles: 
-    - connect-api
