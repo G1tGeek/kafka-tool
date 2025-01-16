@@ -1,0 +1,10 @@
+name=mausam-mongo-sink
+connector.class=com.mongodb.kafka.connect.sink.MongoSinkConnector
+tasks.max=1
+topics={{ kafka_topic }}
+connection.uri=mongodb://{{ database_host }}:27017
+database={{ mongo_database }}
+collection={{ mongo_collection }}
+key.converter=org.apache.kafka.connect.storage.StringConverter
+value.converter=org.apache.kafka.connect.json.JsonConverter
+value.converter.schemas.enable=false
