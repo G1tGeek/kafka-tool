@@ -1,27 +1,57 @@
 ---
 # tasks file for connect-api
-# roles/kafka_connect_mongo/tasks/main.yml
 
-- name: Install MongoDB Kafka Connector
-  get_url:
-    url: "https://repo1.maven.org/maven2/org/apache/kafka/connect-api/3.9.0/connect-api-3.9.0-javadoc.jar"
-    dest: "/opt/kafka/libs/mongodb-kafka-connect-{{ connector_version }}.jar"
+- name: Update the system
+  apt:
+    update_cache: yes
 
-- name: Ensure the Kafka Connect plugin path is configured
-  lineinfile:
-    path: "/opt/kafka/config/connect-standalone.properties"
-    regexp: '^plugin.path='
-    line: "plugin.path=/opt/kafka/libs"
-    create: yes
+- name: Install necessary dependencies
+  apt:
+    name:
+      - python3-pip
+      - curl
+      - libssl-dev
+    state: present
+    update_cache: yes
 
-- name: Create Kafka Connect MongoDB Sink connector configuration
+- name: Ensure kafka-python module is installed
+  pip:
+    name: kafka-python
+    executable: /usr/bin/pip3
+
+- name: Ensure pymongo module is installed
+  pip:
+    name: pymongo
+    executable: /usr/bin/pip3
+
+- name: Copy the Kafka consumer script
   template:
-    src: mausam-to-mongo.properties.j2
-    dest: "/opt/kafka/config/mausam-to-mongo.properties"
+    src: kafka_consumer.py.j2
+    dest: /opt/kafka_consumer.py
+    mode: '0755'
 
-- name: Start Kafka Connect in standalone mode (optional)
-  command: >
-    /opt/kafka/bin/connect-standalone.sh /opt/kafka/config/connect-standalone.properties /opt/kafka/config/mausam-to-mongo.properties
-  async: 30
-  poll: 0
-  when: ansible_os_family == 'Debian'
+- name: Ensure the script has correct permissions
+  file:
+    path: /opt/kafka_consumer.py
+    owner: ubuntu
+    group: ubuntu
+    mode: '0755'
+
+- name: Stop any existing Kafka consumer process
+  shell: |
+    pkill -f "/usr/bin/python3 /opt/kafka_consumer.py" || true
+  ignore_errors: true
+
+- name: Run Kafka consumer script in the background
+  shell: |
+    nohup /usr/bin/python3 /opt/kafka_consumer.py > /var/log/kafka_consumer.log 2>&1 &
+  args:
+    executable: /bin/bash
+
+- name: Ensure Kafka consumer script is running
+  shell: |
+    pgrep -f "/usr/bin/python3 /opt/kafka_consumer.py"
+  register: consumer_status
+  retries: 3
+  delay: 5
+  until: consumer_status.rc == 0
