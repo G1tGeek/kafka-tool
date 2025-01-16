@@ -21,6 +21,11 @@
 
 - name: Create Kafka Connect MongoDB Sink connector configuration
   template:
+    src: connect-standalone.properties.j2
+    dest: "{{ kafka_dir }}/config/connect-standalone.properties"
+
+- name: Create connect standalone properties configuration
+  template:
     src: API-to-mongo.properties.j2
     dest: "{{ kafka_dir }}/config/API-to-mongo.properties"
 
