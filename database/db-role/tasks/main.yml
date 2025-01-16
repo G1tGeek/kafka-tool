@@ -1,24 +1,24 @@
 ---
 # Import the MongoDB public GPG key
 - name: Import MongoDB public GPG key
-  ansible.builtin.apt_key:
+  apt_key:
     url: https://www.mongodb.org/static/pgp/server-6.0.asc
     state: present
 
 # Create MongoDB list file
 - name: Add MongoDB repository to sources list
-  ansible.builtin.apt_repository:
+  apt_repository:
     repo: "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse"
     state: present
 
 # Update the local package database
 - name: Update apt cache
-  ansible.builtin.apt:
+  apt:
     update_cache: yes
 
 # Install MongoDB package
 - name: Install MongoDB
-  ansible.builtin.apt:
+  apt:
     name: mongodb-org
     state: present
 
@@ -29,18 +29,18 @@
 
 # Start MongoDB service
 - name: Start MongoDB service
-  ansible.builtin.systemd:
+  systemd:
     name: mongod
     state: started
 
 # Enable MongoDB service to start on boot
 - name: Enable MongoDB to start on boot
-  ansible.builtin.systemd:
+  systemd:
     name: mongod
     enabled: yes
 
 # Create a database 
 - name: Create a database named Weather
-  ansible.builtin.command: "/usr/bin/mongosh --eval 'use weather'"
+  command: mongosh --eval "db.getSiblingDB('weather').createCollection('weather_data')"
   args:
     warn: false
