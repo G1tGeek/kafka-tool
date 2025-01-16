@@ -6,7 +6,7 @@ import json
 # Kafka consumer setup
 consumer = KafkaConsumer(
     'API',  # Kafka topic name
-    bootstrap_servers=['{{ kafka_host }}'],  
+    bootstrap_servers=['{{ kafka_host }}:9092'],  
     group_id='weather-01',
     auto_offset_reset='earliest',
 )
