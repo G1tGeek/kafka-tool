@@ -1,0 +1,131 @@
+pipeline {
+    
+    agent any
+    
+    parameters {
+        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Select action: apply or destroy')
+    }
+    
+    environment {
+        TERRAFORM_WORKSPACE = "/var/lib/jenkins/workspace/one-click/terraform"
+        KAFKA_WORKSPACE = "/var/lib/jenkins/workspace/one-click/ansible"
+        PRODUCER_WORKSPACE = "/var/lib/jenkins/workspace/one-click/producer"
+        DB_WORKSPACE = "/var/lib/jenkins/workspace/one-click/database"
+        CONSUMER_WORKSPACE = "/var/lib/jenkins/workspace/one-click/consumer"
+    }
+    
+    stages {
+        
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/G1tGeek/kafka-tool.git'
+                sh "ls"
+            }
+        }
+        
+        stage('Terraform Init') {
+            steps {
+                sh "terraform -chdir=${env.TERRAFORM_WORKSPACE} init"
+            }
+        }
+        
+        stage('Terraform Apply') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                sh "terraform -chdir=${env.TERRAFORM_WORKSPACE} apply --auto-approve"
+            }
+        }
+        
+        stage('Terraform Destroy') {
+            when {
+                expression { params.ACTION == 'destroy' }
+            }
+            steps {
+                sh "terraform -chdir=${env.TERRAFORM_WORKSPACE} destroy --auto-approve"
+            }
+        }
+        
+        stage('Extract Kafka Host IP') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                script {
+                    def kafkaHostIP = readFile(file: "/var/lib/jenkins/workspace/one-click/terraform/kafka.txt").trim()
+                    env.KAFKA_HOST = kafkaHostIP
+                }
+            }
+        }
+        
+        stage('Install Kafka') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                ansiblePlaybook credentialsId: 'c479b83a-afdb-4eec-9037-f5631f535905',
+                disableHostKeyChecking: true,
+                installation: 'ansible',
+                inventory: "${env.KAFKA_WORKSPACE}/aws_ec2.yml",
+                playbook: "${env.KAFKA_WORKSPACE}/install.yml"
+            }
+        }
+        
+        stage('Kafka producer API') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                ansiblePlaybook credentialsId: 'c479b83a-afdb-4eec-9037-f5631f535905',
+                disableHostKeyChecking: true,
+                installation: 'ansible',
+                inventory: "${env.PRODUCER_WORKSPACE}/aws_ec2.yml",
+                playbook: "${env.PRODUCER_WORKSPACE}/install.yml",
+                extraVars: [kafka_host: "${env.KAFKA_HOST}"]
+            }
+        }
+        
+        stage('Install MongoDB') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                ansiblePlaybook credentialsId: 'c479b83a-afdb-4eec-9037-f5631f535905',
+                disableHostKeyChecking: true,
+                installation: 'ansible',
+                inventory: "${env.DB_WORKSPACE}/aws_ec2.yml",
+                playbook: "${env.DB_WORKSPACE}/install.yml"
+            }
+        }
+        
+        stage('Kafka Connect API') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                ansiblePlaybook(
+                    credentialsId: 'c479b83a-afdb-4eec-9037-f5631f535905',
+                    disableHostKeyChecking: true,
+                    installation: 'ansible',
+                    inventory: "${env.CONSUMER_WORKSPACE}/aws_ec2.yml",
+                    playbook: "${env.CONSUMER_WORKSPACE}/install.yml",
+                    extraVars: [kafka_host: "${env.KAFKA_HOST}"]
+                )
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+            slackSend channel: 'noti',
+                      message: "SUCCESS: Pipeline '${env.JOB_NAME}' [#${env.BUILD_NUMBER}] completed successfully. Check the details: ${env.BUILD_URL}"
+        }
+        failure {
+            echo 'Pipeline failed!'
+            slackSend channel: 'noti',
+                      message: "FAILURE: Pipeline '${env.JOB_NAME}' [#${env.BUILD_NUMBER}] failed. Check the details: ${env.BUILD_URL}"
+        }
+    }
+}
