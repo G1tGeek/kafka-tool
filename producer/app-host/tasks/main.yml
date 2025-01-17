@@ -31,11 +31,6 @@
     group: ubuntu
     mode: '0755'
 
-- name: Stop any existing Kafka producer process
-  shell: |
-    pkill -f "/usr/bin/python3 /opt/kafka_producer.py" || true
-  ignore_errors: true
-
 - name: Run Kafka producer script in the background
   shell: |
     nohup /usr/bin/python3 /opt/kafka_producer.py > /var/log/kafka_producer.log 2>&1 &
