@@ -78,11 +78,3 @@
     state: started
     delay: 10
     timeout: 60
-
-- name: Create Kafka topic
-  become: true
-  command: >
-    {{ kafka_install_dir }}/bin/kafka-topics.sh
-    --create --topic API
-    --bootstrap-server {{ ansible_host }}:{{ kafka_port }}
-    --partitions 1 --replication-factor 1
