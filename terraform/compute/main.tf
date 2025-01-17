@@ -24,7 +24,7 @@ resource "aws_instance" "private1" {
   instance_type          = var.ec2_medium
   key_name               = var.pem_key
   subnet_id              = var.private1_subnet_id
-  vpc_security_group_ids = [var.privateSG_id]
+  vpc_security_group_ids = [var.appSG_id]
 
   private_dns_name_options {
     enable_resource_name_dns_a_record = false
@@ -42,7 +42,7 @@ resource "aws_instance" "private2" {
   instance_type          = var.ec2_medium
   key_name               = var.pem_key
   subnet_id              = var.private2_subnet_id
-  vpc_security_group_ids = [var.privateSG_id]
+  vpc_security_group_ids = [var.kafkaSG_id]
 
   private_dns_name_options {
     enable_resource_name_dns_a_record = false
@@ -60,7 +60,7 @@ resource "aws_instance" "private3" {
   instance_type          = var.ec2_medium
   key_name               = var.pem_key
   subnet_id              = var.private3_subnet_id
-  vpc_security_group_ids = [var.privateSG_id]
+  vpc_security_group_ids = [var.databaseSG_id]
 
   private_dns_name_options {
     enable_resource_name_dns_a_record = false

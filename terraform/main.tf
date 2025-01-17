@@ -21,7 +21,9 @@ module "compute" {
   private1_subnet_id = module.networking.private1_subnet_id
   private2_subnet_id = module.networking.private2_subnet_id
   private3_subnet_id = module.networking.private3_subnet_id
-  privateSG_id = module.networking.privateSG_id
+  appSG_id = module.networking.appSG_id
+  kafkaSG_id = module.networking.kafkaSG_id
+  databaseSG_id = module.networking.databaseSG_id
 }
 
 terraform {

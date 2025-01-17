@@ -40,6 +40,14 @@ variable "private3_subnet_id" {
   type        = string
 }
 
-variable "privateSG_id" {
+variable "appSG_id" {
+  type        = string
+}
+
+variable "kafkaSG_id" {
+  type        = string
+}
+
+variable "databaseSG_id" {
   type        = string
 }

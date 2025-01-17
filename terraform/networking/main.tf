@@ -168,24 +168,97 @@ resource "aws_security_group" "publicSG" {
   }
 }
 
-resource "aws_security_group" "privateSG" {
+resource "aws_security_group" "appSG" {
   vpc_id = aws_vpc.tool.id
 
   ingress {
-    from_port   = var.all
-    to_port     = var.all
-    protocol    = var.anywhere
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.sg_cidr_range]
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = [var.sg_cidr_range]
   }
 
   egress {
-    from_port   = var.all
-    to_port     = var.all
-    protocol    = var.anywhere
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1" 
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "appSG"
+  }
+}
+
+resource "aws_security_group" "kafkaSG" {
+  vpc_id = aws_vpc.tool.id
+
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.sg_cidr_range]
+  }
+
+  ingress {
+    from_port   = 9092
+    to_port     = 9092
+    protocol    = "tcp"
+    cidr_blocks = [var.sg_cidr_range]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1" 
     cidr_blocks = [var.sg_cidr_range]
   }
 
   tags = {
-    Name = "privateSG"
+    Name = "kafkaSG"
+  }
+}
+
+resource "aws_security_group" "databaseSG" {
+  vpc_id = aws_vpc.tool.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.sg_cidr_range]
+  }
+
+  ingress {
+    from_port   = 27017
+    to_port     = 27017
+    protocol    = "tcp"
+    cidr_blocks = [var.sg_cidr_range]
+  }
+
+  ingress {
+    from_port   = 9092
+    to_port     = 9092
+    protocol    = "tcp"
+    cidr_blocks = [var.sg_cidr_range]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1" 
+    cidr_blocks = [var.sg_cidr_range]
+  }
+
+  tags = {
+    Name = "databaseSG"
   }
 }

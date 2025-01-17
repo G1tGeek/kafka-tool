@@ -57,16 +57,6 @@ variable "rt_cidr_range" {
 
 ###########Security Groups#########
 
-variable "all" {
-  type    = string
-  default = "0"
-}
-
-variable "anywhere" {
-  type    = string
-  default = "-1"
-}
-
 variable "sg_cidr_range" {
   type    = string
   default = "0.0.0.0/0"

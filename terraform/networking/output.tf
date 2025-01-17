@@ -42,6 +42,14 @@ output "private3_subnet_id" {
   value = aws_subnet.private3.id
 }
 
-output "privateSG_id" {
-  value = aws_security_group.privateSG.id
+output "appSG_id" {
+  value = aws_security_group.appSG.id
+}
+
+output "kafkaSG_id" {
+  value = aws_security_group.kafkaSG.id
+}
+
+output "databaseSG_id" {
+  value = aws_security_group.databaseSG.id
 }
