@@ -37,11 +37,6 @@
     group: ubuntu
     mode: '0755'
 
-- name: Stop any existing Kafka consumer process
-  shell: |
-    pkill -f "/usr/bin/python3 /opt/kafka_consumer.py" || true
-  ignore_errors: true
-
 - name: Run Kafka consumer script in the background
   shell: |
     nohup /usr/bin/python3 /opt/kafka_consumer.py > /var/log/kafka_consumer.log 2>&1 &
