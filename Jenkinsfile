@@ -7,11 +7,11 @@ pipeline {
     }
     
     environment {
-        TERRAFORM_WORKSPACE = "/var/lib/jenkins/workspace/one-click/terraform"
-        KAFKA_WORKSPACE = "/var/lib/jenkins/workspace/one-click/ansible"
-        PRODUCER_WORKSPACE = "/var/lib/jenkins/workspace/one-click/producer"
-        DB_WORKSPACE = "/var/lib/jenkins/workspace/one-click/database"
-        CONSUMER_WORKSPACE = "/var/lib/jenkins/workspace/one-click/consumer"
+        TERRAFORM_WORKSPACE = "${WORKSPACE}/one-click/terraform"
+        KAFKA_WORKSPACE = "${WORKSPACE}/one-click/ansible"
+        PRODUCER_WORKSPACE = "${WORKSPACE}/one-click/producer"
+        DB_WORKSPACE = "${WORKSPACE}/one-click/database"
+        CONSUMER_WORKSPACE = "${WORKSPACE}/one-click/consumer"
     }
     
     stages {
