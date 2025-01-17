@@ -7,11 +7,11 @@ pipeline {
     }
     
     environment {
-        TERRAFORM_WORKSPACE = "${WORKSPACE}/one-click/terraform"
-        KAFKA_WORKSPACE = "${WORKSPACE}/one-click/ansible"
-        PRODUCER_WORKSPACE = "${WORKSPACE}/one-click/producer"
-        DB_WORKSPACE = "${WORKSPACE}/one-click/database"
-        CONSUMER_WORKSPACE = "${WORKSPACE}/one-click/consumer"
+        TERRAFORM_WORKSPACE = "${WORKSPACE}/terraform"
+        KAFKA_WORKSPACE = "${WORKSPACE}/ansible"
+        PRODUCER_WORKSPACE = "${WORKSPACE}/producer"
+        DB_WORKSPACE = "${WORKSPACE}/database"
+        CONSUMER_WORKSPACE = "${WORKSPACE}/consumer"
     }
     
     stages {
