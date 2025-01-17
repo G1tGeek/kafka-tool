@@ -150,16 +150,16 @@ resource "aws_security_group" "publicSG" {
   vpc_id = aws_vpc.tool.id
 
   ingress {
-    from_port   = var.all
-    to_port     = var.all
-    protocol    = var.anywhere
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = [var.sg_cidr_range]
   }
 
   egress {
-    from_port   = var.all
-    to_port     = var.all
-    protocol    = var.anywhere
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = [var.sg_cidr_range]
   }
 
