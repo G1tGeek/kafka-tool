@@ -98,7 +98,7 @@ pipeline {
             }
         }
         
-        stage('Kafka Connect API') {
+        stage('Kafka Consumer API') {
             when {
                 expression { params.ACTION == 'apply' }
             }
