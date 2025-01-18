@@ -34,15 +34,15 @@ output "app_subnet_id" {
   value = aws_subnet.app_subnet.id
 }
 
-output "kafka_subnet1" {
+output "kafka_subnet1_id" {
   value = aws_subnet.kafka_subnet1.id
 }
 
-output "kafka_subnet2" {
+output "kafka_subnet2_id" {
   value = aws_subnet.kafka_subnet2.id
 }
 
-output "kafka_subnet3" {
+output "kafka_subnet3_id" {
   value = aws_subnet.kafka_subnet3.id
 }
 

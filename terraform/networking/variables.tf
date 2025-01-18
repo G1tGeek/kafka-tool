@@ -29,12 +29,12 @@ variable "subnet4_range" {
 
 variable "subnet5_range" {
   type    = string
-  default = "10.0.4.0/24"
+  default = "10.0.5.0/24"
 }
 
 variable "subnet6_range" {
   type    = string
-  default = "10.0.4.0/24"
+  default = "10.0.6.0/24"
 }
 
 ################availablity zone#####
@@ -79,4 +79,40 @@ variable "rt_cidr_range" {
 variable "sg_cidr_range" {
   type    = string
   default = "0.0.0.0/0"
+}
+
+variable "zero" {
+  type    = string
+  default = "0"
+}
+
+variable "anywhere" {
+  type    = string
+  default = "-1"
+}
+
+variable "ssh" {
+  type    = string
+  default = "22"
+}
+
+variable "tcp" {
+  type    = string
+  default = "tcp"
+}
+
+variable "https" {
+  type    = string
+  default = "443"
+}
+
+
+variable "kafka" {
+  type    = string
+  default = "9092"
+}
+
+variable "mongoDB" {
+  type    = string
+  default = "27017"
 }

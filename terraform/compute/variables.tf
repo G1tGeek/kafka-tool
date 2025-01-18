@@ -28,15 +28,23 @@ variable "publicSG_id" {
   type        = string
 }
 
-variable "private1_subnet_id" {
+variable "app_subnet_id" {
   type        = string
 }
 
-variable "private2_subnet_id" {
+variable "database_subnet_id" {
   type        = string
 }
 
-variable "private3_subnet_id" {
+variable "kafka_subnet1_id" {
+  type        = string
+}
+
+variable "kafka_subnet2_id" {
+  type        = string
+}
+
+variable "kafka_subnet3_id" {
   type        = string
 }
 

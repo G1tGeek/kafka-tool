@@ -18,9 +18,11 @@ module "compute" {
   source = "./compute"
   public_subnet_id = module.networking.public_subnet_id
   publicSG_id = module.networking.publicSG_id
-  private1_subnet_id = module.networking.app_subnet_id
-  private2_subnet_id = module.networking.kafka_subnet1_id
-  private3_subnet_id = module.networking.database_subnet_id
+  app_subnet_id = module.networking.app_subnet_id
+  kafka_subnet1_id = module.networking.kafka_subnet1_id
+  kafka_subnet2_id = module.networking.kafka_subnet2_id
+  kafka_subnet3_id = module.networking.kafka_subnet3_id
+  database_subnet_id = module.networking.database_subnet_id
   appSG_id = module.networking.appSG_id
   kafkaSG_id = module.networking.kafkaSG_id
   databaseSG_id = module.networking.databaseSG_id
@@ -37,14 +39,8 @@ terraform {
 
 resource "local_file" "output1" {
   content = <<EOT
-${module.compute.kafka_private_ip}
+${module.compute.kafka1_private_ip}
 EOT
   filename = "kafka.txt"
 }
 
-resource "local_file" "output2" {
-  content = <<EOT
-${module.compute.database_private_ip}
-EOT
-  filename = "database.txt"
-}
