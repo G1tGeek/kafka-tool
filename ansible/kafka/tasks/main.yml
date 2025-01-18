@@ -73,7 +73,7 @@
 
 - name: Wait for Kafka to start
   wait_for:
-    host: "{{ ansible_host }}"
+    host: "{{ kafka_host }}"
     port: "{{ kafka_port }}"
     state: started
     delay: 10
