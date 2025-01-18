@@ -44,14 +44,14 @@ EOT
   filename = "kafka1.txt"
 }
 
-resource "local_file" "output1" {
+resource "local_file" "output2" {
   content = <<EOT
 ${module.compute.kafka2_private_ip}
 EOT
   filename = "kafka2.txt"
 }
 
-resource "local_file" "output1" {
+resource "local_file" "output3" {
   content = <<EOT
 ${module.compute.kafka3_private_ip}
 EOT
