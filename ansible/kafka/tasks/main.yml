@@ -89,9 +89,12 @@
     delay: 10
     timeout: 60
 
+- name: Gather EC2 instance metadata
+  amazon.aws.ec2_metadata_facts:
+
 - name: Debug EC2 Tag Name
   debug:
-    var: ec2_tag_Name
+    var: ec2_metadata.tags.Name
 
 - name: Create Kafka topic on kafka-host1
   command: >
@@ -100,4 +103,4 @@
     --bootstrap-server {{ kafka_host1 }}:{{ kafka_port }}
     --partitions 3
     --replication-factor 3
-  when: ec2_tag_Name == "kafka-host1"
+  when: ec2_metadata.tags.Name == "kafka-host1"
