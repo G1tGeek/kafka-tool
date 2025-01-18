@@ -88,16 +88,3 @@
     state: started
     delay: 10
     timeout: 60
-
-- name: Debug Inventory Hostname
-  debug:
-    msg: "Running on host: {{ inventory_hostname }}"
-
-- name: Create Kafka topic on kafka-host1
-  command: >
-    /opt/kafka_{{ kafka_version }}/bin/kafka-topics.sh --create
-    --topic API
-    --bootstrap-server {{ kafka_host1 }}:{{ kafka_port }}
-    --partitions 3
-    --replication-factor 3
-  when: inventory_hostname == "kafka-host1"
