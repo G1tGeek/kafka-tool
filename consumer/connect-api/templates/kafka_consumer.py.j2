@@ -3,9 +3,8 @@ from kafka import KafkaConsumer
 import pymongo
 import json
 
-# Kafka consumer setup
 consumer = KafkaConsumer(
-    'API',  # Kafka topic name
+    'API', 
     bootstrap_servers='{{ kafka_host }}:9092',
     group_id='weather-01',
     auto_offset_reset='earliest',
@@ -15,7 +14,6 @@ client = pymongo.MongoClient("mongodb://{{ ansible_host }}:27017")
 db = client["weather"]  
 collection = db["weather_data"] 
 
-# Consume messages and send them to MongoDB
 for message in consumer:
     data = json.loads(message.value.decode('utf-8'))
     collection.insert_one(data)
