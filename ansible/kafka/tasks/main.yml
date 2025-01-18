@@ -83,7 +83,7 @@
 
 - name: Wait for Kafka to start
   wait_for:
-    host: "{{ kafka_host }}"
+    host: "{{ kafka_host1 }}"
     port: "{{ kafka_port }}"
     state: started
     delay: 10
