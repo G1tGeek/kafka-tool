@@ -3,7 +3,9 @@ regions:
   - "us-east-1"
 filters:
   tag:Name:
-    - kafka-host
+    - kafka-host1
+    - kafka-host2
+    - kafka-host3
   instance-state-name: running
 
 compose:
