@@ -5,6 +5,4 @@ mongo_bind_ip: "0.0.0.0"
 mongo_data_dir: /var/lib/mongo
 mongo_log_dir: /var/log/mongodb
 mongo_version: "5.0"
-
-# Set this to true if you want to enable MongoDB authentication
 mongo_auth_enabled: false
