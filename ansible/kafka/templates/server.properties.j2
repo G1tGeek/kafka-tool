@@ -7,14 +7,12 @@ process.roles=broker,controller
 node.id={{ node_id }}
 
 # Controller quorum voters
-# Assuming you have 3 nodes, you should list all of them here.
 controller.quorum.voters=1@{{ kafka_host1 }}:9093,2@{{ kafka_host2 }}:9093,3@{{ kafka_host3 }}:9093
 
 # Listeners
 listeners=PLAINTEXT://{{ kafka_host1 }}:9092,CONTROLLER://{{ kafka_host1 }}:9093
 advertised.listeners=PLAINTEXT://{{ kafka_host1 }}:9092,CONTROLLER://{{ kafka_host1 }}:9093
 
-# Ensure controller.listener.names has a value present in 'listeners'
 controller.listener.names=CONTROLLER
 
 # Security protocols for listeners
@@ -30,7 +28,6 @@ log.dirs=/tmp/kraft-combined-logs
 num.partitions=1
 
 # Kafka cluster ID
-# The ID is dynamically generated and set using Ansible facts
 log.retention.hours=168
 log.segment.bytes=1073741824
 log.retention.check.interval.ms=300000
