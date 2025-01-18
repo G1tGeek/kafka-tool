@@ -26,19 +26,14 @@
     path: /tmp/kraft-combined-logs
     state: absent
 
-- name: Map Node IDs to Inventory Hostnames
+- name: Set sequential broker ID based on host inventory order
   set_fact:
-    node_id: "{{ node_id_map[inventory_hostname] | default(-1) }}"
-  vars:
-    node_id_map:
-      kafka-host1: 1
-      kafka-host2: 2
-      kafka-host3: 3
+    node_id: "{{ ansible_play_hosts.index(inventory_hostname) + 1 }}"
 
 - name: Debug Node ID
   debug:
     msg: "Node ID for {{ inventory_hostname }}: {{ node_id }}"
-    
+
 - name: Generate UUID for Kafka Cluster
   command: bin/kafka-storage.sh random-uuid
   args:
