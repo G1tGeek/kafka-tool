@@ -34,9 +34,39 @@ resource "aws_subnet" "public" {
   }
 }
 
-resource "aws_subnet" "private1" {
+resource "aws_subnet" "kafka_subnet1" {
   vpc_id            = aws_vpc.tool.id
   cidr_block        = var.subnet2_range
+  availability_zone = var.az2
+
+  tags = {
+    Name = "kafka_subnet1"
+  }
+}
+
+resource "aws_subnet" "kafka_subnet2" {
+  vpc_id            = aws_vpc.tool.id
+  cidr_block        = var.subnet3_range
+  availability_zone = var.az3
+
+  tags = {
+    Name = "kafka_subnet2"
+  }
+}
+
+resource "aws_subnet" "kafka_subnet3" {
+  vpc_id            = aws_vpc.tool.id
+  cidr_block        = var.subnet4_range
+  availability_zone = var.az4
+
+  tags = {
+    Name = "kafka_subnet3"
+  }
+}
+
+resource "aws_subnet" "app_subnet" {
+  vpc_id            = aws_vpc.tool.id
+  cidr_block        = var.subnet5_range
   availability_zone = var.az2
 
   tags = {
@@ -44,19 +74,10 @@ resource "aws_subnet" "private1" {
   }
 }
 
-resource "aws_subnet" "private2" {
-  vpc_id            = aws_vpc.tool.id
-  cidr_block        = var.subnet3_range
-  availability_zone = var.az2
 
-  tags = {
-    Name = "kafka_subnet"
-  }
-}
-
-resource "aws_subnet" "private3" {
+resource "aws_subnet" "database_subnet" {
   vpc_id            = aws_vpc.tool.id
-  cidr_block        = var.subnet4_range
+  cidr_block        = var.subnet6_range
   availability_zone = var.az2
 
   tags = {

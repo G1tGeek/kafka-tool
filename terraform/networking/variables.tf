@@ -27,6 +27,16 @@ variable "subnet4_range" {
   default = "10.0.4.0/24"
 }
 
+variable "subnet5_range" {
+  type    = string
+  default = "10.0.4.0/24"
+}
+
+variable "subnet6_range" {
+  type    = string
+  default = "10.0.4.0/24"
+}
+
 ################availablity zone#####
 
 variable "az1" {
@@ -40,6 +50,15 @@ variable "az2" {
   default = "us-east-1b"
 }
 
+variable "az3" {
+  type    = string
+  default = "us-east-1c"
+}
+
+variable "az4" {
+  type    = string
+  default = "us-east-1d"
+}
 
 ###############NAT Gateway##########
 

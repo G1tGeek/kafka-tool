@@ -18,9 +18,9 @@ module "compute" {
   source = "./compute"
   public_subnet_id = module.networking.public_subnet_id
   publicSG_id = module.networking.publicSG_id
-  private1_subnet_id = module.networking.private1_subnet_id
-  private2_subnet_id = module.networking.private2_subnet_id
-  private3_subnet_id = module.networking.private3_subnet_id
+  private1_subnet_id = module.networking.app_subnet_id
+  private2_subnet_id = module.networking.kafka_subnet1_id
+  private3_subnet_id = module.networking.database_subnet_id
   appSG_id = module.networking.appSG_id
   kafkaSG_id = module.networking.kafkaSG_id
   databaseSG_id = module.networking.databaseSG_id
