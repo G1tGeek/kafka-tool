@@ -1,22 +1,18 @@
 ---
-# Import the MongoDB public GPG key
 - name: Import MongoDB public GPG key
   apt_key:
     url: https://www.mongodb.org/static/pgp/server-6.0.asc
     state: present
 
-# Create MongoDB list file
 - name: Add MongoDB repository to sources list
   apt_repository:
     repo: "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse"
     state: present
 
-# Update the local package database
 - name: Update apt cache
   apt:
     update_cache: yes
 
-# Install MongoDB package
 - name: Install MongoDB
   apt:
     name: mongodb-org
@@ -27,19 +23,16 @@
     src: mongod.conf.j2
     dest: /etc/mongod.conf
 
-# Start MongoDB service
 - name: Start MongoDB service
   systemd:
     name: mongod
     state: started
 
-# Enable MongoDB service to start on boot
 - name: Enable MongoDB to start on boot
   systemd:
     name: mongod
     enabled: yes
 
-# Create a database 
 - name: Create a database named Weather
   command: mongosh --eval "db.getSiblingDB('weather').createCollection('weather_data')"
   args:
