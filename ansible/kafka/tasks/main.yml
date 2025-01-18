@@ -58,7 +58,7 @@
 
 - name: Format Kafka storage
   command: >
-    bin/kafka-storage.sh format --standalone
+    bin/kafka-storage.sh format
     -t {{ kafka_cluster_id }}
     -c config/kraft/server.properties
   args:
