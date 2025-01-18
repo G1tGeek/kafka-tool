@@ -1,27 +1,40 @@
 import time
 import json
-import subprocess
+import requests
 from kafka import KafkaProducer
 
-
 producer = KafkaProducer(
-    bootstrap_servers='{{ kafka_host }}:9092', 
+    bootstrap_servers='{{ kafka_host }}:9092',
     value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
 
 url = 'https://api.tomorrow.io/v4/weather/forecast?location=42.3478,-71.0466&apikey=rU7aKOmGD3GVFqfn2DiYgiqgPUIuYvAI'
 
 def get_weather_data():
-    result = subprocess.run(['curl', '--request', 'GET', '--url', url], capture_output=True, text=True)
-    return json.loads(result.stdout) 
+    """Function to fetch weather data using requests"""
+    try:
+        response = requests.get(url)
+        response.raise_for_status() 
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching weather data: {e}")
+        return None
+
 def send_to_kafka(data):
     """Function to send data to Kafka topic"""
-    producer.send('API', value=data) 
-    producer.flush()
+    try:
+        producer.send('API', value=data)
+        producer.flush()
+        print("Data sent to Kafka:", data)
+    except Exception as e:
+        print(f"Error sending data to Kafka: {e}")
 
 while True:
-    data = get_weather_data()  #
-    send_to_kafka(data) 
-    print("Data sent to Kafka:", data)
+    data = get_weather_data()
+    if data:
+        send_to_kafka(data)
+    else:
+        print("Skipping Kafka send due to failed API call.")
     
-    time.sleep(14400)  
+    time.sleep(14400) 
+
