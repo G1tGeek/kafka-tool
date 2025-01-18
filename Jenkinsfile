@@ -67,7 +67,7 @@ pipeline {
                 disableHostKeyChecking: true,
                 installation: 'ansible',
                 inventory: "${env.KAFKA_WORKSPACE}/aws_ec2.yml",
-                playbook: "${env.KAFKA_WORKSPACE}/install.yml,
+                playbook: "${env.KAFKA_WORKSPACE}/install.yml",
                 extraVars: [kafka_host: "${env.KAFKA_HOST}"]
             }
         }
