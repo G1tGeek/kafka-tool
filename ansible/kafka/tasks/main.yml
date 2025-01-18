@@ -88,3 +88,11 @@
     state: started
     delay: 10
     timeout: 60
+
+- name: Create Kafka topic on kafka_host1
+  command: >
+    bin/kafka-topics.sh --create
+    --topic API
+    --bootstrap-server {{ kafka_hos1 }}:{{ kafka_port }}
+    --partitions 3
+    --replication-factor 3
