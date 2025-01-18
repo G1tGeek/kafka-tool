@@ -93,6 +93,6 @@
   command: >
     bin/kafka-topics.sh --create
     --topic API
-    --bootstrap-server {{ kafka_hos1 }}:{{ kafka_port }}
+    --bootstrap-server {{ kafka_host1 }}:{{ kafka_port }}
     --partitions 3
     --replication-factor 3
