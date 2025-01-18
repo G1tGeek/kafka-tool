@@ -4,7 +4,7 @@
 process.roles=broker,controller
 
 # Node ID
-node.id=1
+node.id={{ node_id }}
 
 # Controller quorum voters
 controller.quorum.voters=1@{{ kafka_host }}:9093
