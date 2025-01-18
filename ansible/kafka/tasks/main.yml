@@ -26,6 +26,19 @@
     path: /tmp/kraft-combined-logs
     state: absent
 
+- name: Set static broker ID
+  set_fact:
+    node_id: >
+      {% if inventory_hostname == 'kafka-host1' %}
+      1
+      {% elif inventory_hostname == 'kafka-host2' %}
+      2
+      {% elif inventory_hostname == 'kafka-host3' %}
+      3
+      {% else %}
+      -1
+      {% endif %}
+
 - name: Generate UUID for Kafka Cluster
   command: bin/kafka-storage.sh random-uuid
   args:
@@ -41,7 +54,7 @@
   template:
     src: server.properties.j2
     dest: /opt/kafka_{{ kafka_version }}/config/kraft/server.properties
-    
+
 - name: Set Kafka Cluster ID
   set_fact:
     kafka_cluster_id: "{{ uuid_output.stdout }}"
