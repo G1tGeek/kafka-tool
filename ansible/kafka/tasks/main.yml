@@ -39,6 +39,10 @@
       -1
       {% endif %}
 
+- name: Debug Node ID
+  debug:
+    msg: "Node ID for {{ inventory_hostname }}: {{ node_id }}"
+    
 - name: Generate UUID for Kafka Cluster
   command: bin/kafka-storage.sh random-uuid
   args:
