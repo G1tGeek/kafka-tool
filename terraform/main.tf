@@ -41,6 +41,19 @@ resource "local_file" "output1" {
   content = <<EOT
 ${module.compute.kafka1_private_ip}
 EOT
-  filename = "kafka.txt"
+  filename = "kafka1.txt"
 }
 
+resource "local_file" "output1" {
+  content = <<EOT
+${module.compute.kafka2_private_ip}
+EOT
+  filename = "kafka2.txt"
+}
+
+resource "local_file" "output1" {
+  content = <<EOT
+${module.compute.kafka3_private_ip}
+EOT
+  filename = "kafka3.txt"
+}
