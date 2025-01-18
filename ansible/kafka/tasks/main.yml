@@ -26,18 +26,14 @@
     path: /tmp/kraft-combined-logs
     state: absent
 
-- name: Set static broker ID
+- name: Map Node IDs to Inventory Hostnames
   set_fact:
-    node_id: >
-      {% if inventory_hostname == 'kafka-host1' %}
-      1
-      {% elif inventory_hostname == 'kafka-host2' %}
-      2
-      {% elif inventory_hostname == 'kafka-host3' %}
-      3
-      {% else %}
-      -1
-      {% endif %}
+    node_id: "{{ node_id_map[inventory_hostname] | default(-1) }}"
+  vars:
+    node_id_map:
+      kafka-host1: 1
+      kafka-host2: 2
+      kafka-host3: 3
 
 - name: Debug Node ID
   debug:
