@@ -46,18 +46,40 @@ pipeline {
             }
         }
         
-        stage('Extract Kafka Host IP') {
+        stage('Extract Kafka Host 1 IP') {
             when {
                 expression { params.ACTION == 'apply' }
             }
             steps {
                 script {
-                    def kafkaHostIP = readFile(file: "/var/lib/jenkins/workspace/one-click/terraform/kafka.txt").trim()
-                    env.KAFKA_HOST = kafkaHostIP
+                    def kafkaHostIP1 = readFile(file: "/var/lib/jenkins/workspace/one-click/terraform/kafka1.txt").trim()
+                    env.KAFKA_HOST1 = kafkaHostIP1
                 }
             }
         }
-        
+
+        stage('Extract Kafka Host 2 IP') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                script {
+                    def kafkaHostIP2 = readFile(file: "/var/lib/jenkins/workspace/one-click/terraform/kafka2.txt").trim()
+                    env.KAFKA_HOST2 = kafkaHostIP2
+                }
+            }
+        }
+        stage('Extract Kafka Host 3 IP') {
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps {
+                script {
+                    def kafkaHostIP3 = readFile(file: "/var/lib/jenkins/workspace/one-click/terraform/kafka3.txt").trim()
+                    env.KAFKA_HOST3 = kafkaHostIP3
+                }
+            }
+        }
         stage('Install Kafka') {
             when {
                 expression { params.ACTION == 'apply' }
@@ -68,7 +90,7 @@ pipeline {
                 installation: 'ansible',
                 inventory: "${env.KAFKA_WORKSPACE}/aws_ec2.yml",
                 playbook: "${env.KAFKA_WORKSPACE}/install.yml",
-                extraVars: [kafka_host: "${env.KAFKA_HOST}"]
+                extraVars: [kafka_host1: "${env.KAFKA_HOST1}", kafka_host2: "${env.KAFKA_HOST2}", kafka_host3: "${env.KAFKA_HOST3}"]
             }
         }
         
@@ -82,7 +104,7 @@ pipeline {
                 installation: 'ansible',
                 inventory: "${env.PRODUCER_WORKSPACE}/aws_ec2.yml",
                 playbook: "${env.PRODUCER_WORKSPACE}/install.yml",
-                extraVars: [kafka_host: "${env.KAFKA_HOST}"]
+                extraVars: [kafka_host: "${env.KAFKA_HOST1}"]
             }
         }
         
@@ -110,7 +132,7 @@ pipeline {
                     installation: 'ansible',
                     inventory: "${env.CONSUMER_WORKSPACE}/aws_ec2.yml",
                     playbook: "${env.CONSUMER_WORKSPACE}/install.yml",
-                    extraVars: [kafka_host: "${env.KAFKA_HOST}"]
+                    extraVars: [kafka_host: "${env.KAFKA_HOST1}"]
                 )
             }
         }
