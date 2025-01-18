@@ -54,6 +54,8 @@
   template:
     src: server.properties.j2
     dest: /opt/kafka_{{ kafka_version }}/config/kraft/server.properties
+  vars:
+    node_id: "{{ node_id }}"
 
 - name: Set Kafka Cluster ID
   set_fact:
