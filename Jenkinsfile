@@ -90,9 +90,10 @@ pipeline {
                 installation: 'ansible',
                 inventory: "${env.KAFKA_WORKSPACE}/aws_ec2.yml",
                 playbook: "${env.KAFKA_WORKSPACE}/install.yml",
-                extraVars: [
+                extraVars: 
+                [
                 kafka_host1: "${env.KAFKA_HOST1}",
-                kafka_host2: "${env.KAFKA_HOST2}"],
+                kafka_host2: "${env.KAFKA_HOST2}",
                 kafka_host3: "${env.KAFKA_HOST3}"
                 ]
             }
